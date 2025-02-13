@@ -19,14 +19,11 @@ typedef struct s_data {
     char **map;
     int map_width;
     int map_height;
+    int map_capacity;
     int player_x;
     int player_y;
     char player_dir;
 } t_data;
-
-
-
-
 
 
 void parse_cub_file(t_data *data, const char *filename);
@@ -38,5 +35,29 @@ void error_exit(t_data *data, const char *msg);
 
 char **ft_split(char const *s, char c);
 void	ft_free_tab(char **tab);
+
+//get_next_line
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
+
+char	*get_next_line(int fd);
+char	*ft_line(char *src);
+int		ft_search(char *s, int c);
+char	*ft_move_start(char *start);
+char	*ft_strjoin_gnl(char *start, char *buff);
+char	*ft_join(char *dest, char *s1, char *s2);
+
+//utils
+char *ft_strtok(char *str, const char *delim);
+char	*ft_strjoin(char const *s1, char const *s2);
+size_t	ft_strlen(const char *s);
+int	    ft_atoi(char *str);
+char	*ft_strdup(char *s1);
+int	    ft_strncmp(const char *s1, const char *s2, size_t n);
+char	*ft_strchr(const char *str, int c);
+int	    ft_strcmp(const char *s1, const char *s2);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+int	    ft_strlcpy(char *dst, const char *src, int dstsize);
 
 #endif
