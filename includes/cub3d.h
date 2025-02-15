@@ -5,24 +5,23 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <string.h>
 
 #define MAX_LINE_LENGTH 1024
 
 typedef struct s_data {
-    char *north_texture;
-    char *south_texture;
-    char *west_texture;
-    char *east_texture;
-    int floor_color[3];
-    int ceiling_color[3];
-    char **map;
-    int map_width;
-    int map_height;
-    int map_capacity;
-    int player_x;
-    int player_y;
-    char player_dir;
+	char *north_texture;
+	char *south_texture;
+	char *west_texture;
+	char *east_texture;
+	int floor_color[3];
+	int ceiling_color[3];
+	char **map;
+	int map_width;
+	int map_height;
+	int map_capacity;
+	int player_x;
+	int player_y;
+	char player_dir;
 } t_data;
 
 
@@ -49,7 +48,7 @@ char	*ft_strjoin_gnl(char *start, char *buff);
 char	*ft_join(char *dest, char *s1, char *s2);
 
 //utils
-char *ft_strtok(char *str, const char *delim);
+char    *ft_strtok(char *str, const char *delim);
 char	*ft_strjoin(char const *s1, char const *s2);
 size_t	ft_strlen(const char *s);
 int	    ft_atoi(char *str);
@@ -59,5 +58,7 @@ char	*ft_strchr(const char *str, int c);
 int	    ft_strcmp(const char *s1, const char *s2);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 int	    ft_strlcpy(char *dst, const char *src, int dstsize);
+char    *ft_strrchr(const char *s, int c);
+char    *ft_strtrim(char const *s, char const *set);
 
 #endif
