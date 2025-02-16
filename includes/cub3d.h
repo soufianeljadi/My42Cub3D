@@ -22,6 +22,12 @@ typedef struct s_data {
 	int player_x;
 	int player_y;
 	char player_dir;
+	int has_north_texture;
+    int has_south_texture;
+    int has_west_texture;
+    int has_east_texture;
+	int has_floor_color;
+    int has_ceiling_color;
 } t_data;
 
 
@@ -60,5 +66,6 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 int	    ft_strlcpy(char *dst, const char *src, int dstsize);
 char    *ft_strrchr(const char *s, int c);
 char    *ft_strtrim(char const *s, char const *set);
+int 	ft_isdigit(int c);
 
 #endif

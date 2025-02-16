@@ -1,10 +1,12 @@
-        NO              ./maps/1.png                     
-SO             ./maps/2.png                       
-    WE                      ./maps/3.png                
-         EA        ./maps/4.png 
+NO                     ./path_to_the_north_texture
+F    220,100,0               
+SO            textures/south_texture.xpm
+               
 
-    F                  126,204,103
-       C           119,181,254
+C 255,255,25            
+
+WE                 ./path_to_the_east_texture          
+EA           ./path_to_the_west_texture
 
                                              1                                    1
                                             101                                  101
