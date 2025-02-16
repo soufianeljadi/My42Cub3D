@@ -169,6 +169,7 @@ void parse_cub_file(t_data *data, const char *filename)
 {
     int fd;
     char *line;
+    int map_started;
 
     if (!has_cub_extension(filename))
     {
@@ -179,6 +180,7 @@ void parse_cub_file(t_data *data, const char *filename)
     if (fd == -1)
         error_exit(data, "Failed to open file");
     line = NULL;
+    map_started = 0;
     while ((line = get_next_line(fd)))
     {
         if (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0 ||
@@ -187,12 +189,20 @@ void parse_cub_file(t_data *data, const char *filename)
         else if (ft_strncmp(line, "F ", 2) == 0 || ft_strncmp(line, "C ", 2) == 0)
             parse_color(data, line);
         else if (ft_strchr("01NSEW ", line[0]))
+        {
+            if (!map_started)
+                map_started = 1;
             parse_map(data, line);
+        }
         else if (line[0] != '\n')
             error_exit(data, "Invalid line in .cub file");
+        else if (map_started && line[0] == '\n')
+            error_exit(data, "Newline in the middle of the map");
         free(line);
     }
     free(line);
+    if (!map_started)
+        error_exit(data, "Map not found in .cub file");
     validate_map(data);
     close(fd);
 }
@@ -223,7 +233,9 @@ void free_data(t_data *data)
 
 void error_exit(t_data *data, const char *msg)
 {
-    fprintf(stderr, "Error: %s\n", msg);
+    write(2, "Error:", 6);
+    write(2, msg, ft_strlen(msg));
+    write(2, "\n", 1);
     free_data(data);
     exit(1);
 }
