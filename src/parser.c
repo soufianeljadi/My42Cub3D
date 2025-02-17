@@ -1,8 +1,10 @@
 #include "../includes/cub3d.h"
+
 void parse_texture(t_data *data, char *line)
 {
     char *path;
     char *identifier;
+    int fd;
 
     identifier = ft_strtok(line, " ");
     if (!identifier)
@@ -21,12 +23,33 @@ void parse_texture(t_data *data, char *line)
         free(temp);
     }
 
+    char *trimmed_path = ft_strtrim(full_path, " ");
+    if (!trimmed_path)
+        error_exit(data, "Failed to trim texture path");
+    full_path =  ft_strtrim(trimmed_path,"\n");
+    if (!full_path)
+        error_exit(data, "Failed to trim texture path");
+    free(trimmed_path);
+    trimmed_path = full_path;
+    if (ft_strchr(trimmed_path, ' '))
+    {
+        free(trimmed_path);
+        error_exit(data, "Texture path contains spaces");
+    }
+    fd = open(trimmed_path, O_RDONLY);
+    if (fd == -1)
+    {
+        free(trimmed_path);
+        error_exit(data, "Failed to open texture file");
+    }
+    close(fd);
+
     if (ft_strcmp(identifier, "NO") == 0)
     {
         if (data->has_north_texture)
             error_exit(data, "Duplicate north texture");
         free(data->north_texture);
-        data->north_texture = full_path;
+        data->north_texture = trimmed_path;
         data->has_north_texture = 1;
     }
     else if (ft_strcmp(identifier, "SO") == 0)
@@ -34,7 +57,7 @@ void parse_texture(t_data *data, char *line)
         if (data->has_south_texture)
             error_exit(data, "Duplicate south texture");
         free(data->south_texture);
-        data->south_texture = full_path;
+        data->south_texture = trimmed_path;
         data->has_south_texture = 1;
     }
     else if (ft_strcmp(identifier, "WE") == 0)
@@ -42,7 +65,7 @@ void parse_texture(t_data *data, char *line)
         if (data->has_west_texture)
             error_exit(data, "Duplicate west texture");
         free(data->west_texture);
-        data->west_texture = full_path;
+        data->west_texture = trimmed_path;
         data->has_west_texture = 1;
     }
     else if (ft_strcmp(identifier, "EA") == 0)
@@ -50,12 +73,12 @@ void parse_texture(t_data *data, char *line)
         if (data->has_east_texture)
             error_exit(data, "Duplicate east texture");
         free(data->east_texture);
-        data->east_texture = full_path;
+        data->east_texture = trimmed_path;
         data->has_east_texture = 1;
     }
     else
     {
-        free(full_path);
+        free(trimmed_path);
         error_exit(data, "Invalid texture identifier");
     }
 }
@@ -67,14 +90,13 @@ void parse_color(t_data *data, char *line)
     char **rgb= NULL;
     char *ptr = NULL;
 
-    // Check if the line starts with 'C' or 'F'
     if (ft_strncmp(line, "C ", 2) == 0)
     {
         if (data->has_ceiling_color)
             error_exit(data, "Duplicate ceiling color");
         color = data->ceiling_color;
         data->has_ceiling_color = 1;
-        ptr = line + 2; // Skip "C "
+        ptr = line + 2;
     }
     else if (ft_strncmp(line, "F ", 2) == 0)
     {
@@ -82,16 +104,14 @@ void parse_color(t_data *data, char *line)
             error_exit(data, "Duplicate floor color");
         color = data->floor_color;
         data->has_floor_color = 1;
-        ptr = line + 2; // Skip "F "
+        ptr = line + 2;
     }
     else
         error_exit(data, "Invalid color line");
 
-    // Skip leading spaces
     while (*ptr == ' ')
         ptr++;
 
-    // Split the RGB values by commas
     rgb = ft_split(ptr, ',');
     if (!rgb || !rgb[0] || !rgb[1] || !rgb[2] || rgb[3])
     {
@@ -99,11 +119,9 @@ void parse_color(t_data *data, char *line)
         error_exit(data, "Invalid RGB format");
     }
 
-    // Validate each RGB value
     i = 0;
     while (i < 3)
     {
-        // Check if the RGB value is missing (empty string)
         if (!rgb[i] || !*rgb[i])
         {
             ft_free_tab(rgb);
@@ -138,7 +156,6 @@ void parse_color(t_data *data, char *line)
             }
         }
 
-        // Convert the RGB value to an integer
         int value = ft_atoi(rgb[i]);
         if (value < 0 || value > 255)
         {
@@ -220,7 +237,6 @@ void validate_map(t_data *data)
     if (player_count != 1)
         error_exit(data, "Map must contain exactly one player spawn point");
 
-    // Check first and last lines (must contain only '1' and spaces)
     i = 0;
     while (i < (int)ft_strlen(data->map[0]))
     {
@@ -236,22 +252,18 @@ void validate_map(t_data *data)
         i++;
     }
 
-    // Check middle lines (must start and end with '1', ignoring leading/trailing spaces)
     i = 1;
     while (i < data->map_height - 1)
     {
         int start = 0;
         int end = ft_strlen(data->map[i]) - 1;
 
-        // Skip leading spaces
         while (data->map[i][start] == ' ')
             start++;
 
-        // Skip trailing spaces
         while (data->map[i][end] == ' ')
             end--;
 
-        // Check if the first and last non-space characters are '1'
         if (data->map[i][start] != '1' || data->map[i][end] != '1')
             error_exit(data, "Map must be surrounded by walls");
         i++;
@@ -289,10 +301,13 @@ void check_colors(t_data *data)
 }
 
 void parse_cub_file(t_data *data, const char *filename)
+
 {
     if (!has_cub_extension(filename))
     {
-        fprintf(stderr, "Error: File '%s' does not have a .cub extension\n", filename);
+        write(2, "Error: File ", 12);
+        write(2, filename, ft_strlen(filename));
+        write(2, " does not have a .cub extension\n ", 32);
         exit(1);
     }
 
