@@ -144,7 +144,7 @@ void parse_color(t_data *data, char *line)
             (rgb[i][1] && !ft_isdigit((char)rgb[i][1])))
             {
                 ft_free_tab(rgb);
-                error_exit(data, "Invalid RGB value1");
+                error_exit(data, "Invalid RGB value");
             }
         }
         else if(ft_strlen(rgb[i]) > 1)
@@ -152,7 +152,7 @@ void parse_color(t_data *data, char *line)
             if ((rgb[i][0] && !ft_isdigit(rgb[i][0])))
             {
                 ft_free_tab(rgb);
-                error_exit(data, "Invalid RGB valueana");
+                error_exit(data, "Invalid RGB value");
             }
         }
 
@@ -209,12 +209,10 @@ void parse_map(t_data *data, char *line)
 
 void validate_map(t_data *data)
 {
-    int player_count;
-    int i;
+    int player_count = 0;
+    int i = 0;
     int j;
 
-    player_count = 0;
-    i = 0;
     while (i < data->map_height)
     {
         j = 0;
@@ -234,6 +232,7 @@ void validate_map(t_data *data)
         }
         i++;
     }
+
     if (player_count != 1)
         error_exit(data, "Map must contain exactly one player spawn point");
 
@@ -266,6 +265,26 @@ void validate_map(t_data *data)
 
         if (data->map[i][start] != '1' || data->map[i][end] != '1')
             error_exit(data, "Map must be surrounded by walls");
+
+        j = start;
+        while (j <= end)
+        {
+            if (data->map[i][j] == '0')
+            {
+                if ((j > start && data->map[i][j - 1] == ' ') || data->map[i][j - 1] == '\0')
+                    error_exit(data, "Empty space adjacent to space in the same line");
+
+                if ((j < end && data->map[i][j + 1] == ' ') || data->map[i][j + 1] == '\0')
+                    error_exit(data, "Empty space adjacent to space in the same line");
+
+                if ((i > 0 && data->map[i - 1][j] == ' ' )|| data->map[i - 1][j] == '\0')
+                    error_exit(data, "Empty space adjacent to space in the line above");
+
+                if ((i < data->map_height - 1 && data->map[i + 1][j] == ' ' )|| data->map[i + 1][j] == '\0')
+                    error_exit(data, "Empty space adjacent to space in the line below");
+            }
+            j++;
+        }
         i++;
     }
 }
@@ -299,15 +318,13 @@ void check_colors(t_data *data)
     if (!data->has_ceiling_color)
         error_exit(data, "Missing ceiling color");
 }
-
 void parse_cub_file(t_data *data, const char *filename)
-
 {
     if (!has_cub_extension(filename))
     {
         write(2, "Error: File ", 12);
         write(2, filename, ft_strlen(filename));
-        write(2, " does not have a .cub extension\n ", 32);
+        write(2, " does not have a .cub extension\n", 32);
         exit(1);
     }
 
@@ -316,6 +333,8 @@ void parse_cub_file(t_data *data, const char *filename)
         error_exit(data, "Failed to open file");
 
     char *line = NULL;
+    int map_started = 0;
+
     while ((line = get_next_line(fd)))
     {
         if (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0 ||
@@ -324,12 +343,22 @@ void parse_cub_file(t_data *data, const char *filename)
         else if (ft_strncmp(line, "F ", 2) == 0 || ft_strncmp(line, "C ", 2) == 0)
             parse_color(data, line);
         else if (ft_strchr("01NSEW ", line[0]))
+        {
+            if (!map_started)
+                map_started = 1;
             parse_map(data, line);
+        }
         else if (line[0] != '\n')
             error_exit(data, "Invalid line in .cub file");
+        else if (map_started && line[0] == '\n')
+            error_exit(data, "Newline in the middle of the map");
+
         free(line);
     }
     free(line);
+
+    if (!map_started)
+        error_exit(data, "Map not found in .cub file");
 
     check_textures(data);
     check_colors(data);

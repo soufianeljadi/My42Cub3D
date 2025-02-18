@@ -1,7 +1,7 @@
 NAME = cub3D
 
 SRCS = src/main.c src/parser.c src/utils.c \
-		get_next_line/get_next_line.c get_next_line/get_next_line_utils.c \
+		gnl/gnl.c gnl/gnl_utils.c \
 		utils/ft_atoi.c utils/ft_strchr.c utils/ft_strcmp.c utils/ft_strncmp.c utils/ft_strjoin.c utils/ft_strdup.c \
 		utils/ft_strtok.c utils/ft_substr.c utils/ft_strrchr.c utils/ft_strtrim.c utils/ft_isdigit.c
 OBJS = $(SRCS:.c=.o)
