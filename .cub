@@ -1,7 +1,5 @@
 NO ./textures
-SO ./textures
-WE ./textures
-EA ./textures
+.xpmEA ./textures
 
 C 255,255,255
 F 0,0,0

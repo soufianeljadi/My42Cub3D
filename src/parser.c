@@ -26,6 +26,7 @@ void parse_texture(t_data *data, char *line)
     char *trimmed_path = ft_strtrim(full_path, " ");
     if (!trimmed_path)
         error_exit(data, "Failed to trim texture path");
+    free(full_path);
     full_path =  ft_strtrim(trimmed_path,"\n");
     if (!full_path)
         error_exit(data, "Failed to trim texture path");
@@ -35,6 +36,13 @@ void parse_texture(t_data *data, char *line)
     {
         free(trimmed_path);
         error_exit(data, "Texture path contains spaces");
+    }
+
+    if(ft_strcmp(ft_strrchr(trimmed_path, '.'),".xpm") != 0
+     || trimmed_path[ft_strlen(trimmed_path) - 5] == '/')
+    {
+        free(trimmed_path);
+        error_exit(data, "Invalid texture file extension");
     }
     fd = open(trimmed_path, O_RDONLY);
     if (fd == -1)
@@ -83,6 +91,21 @@ void parse_texture(t_data *data, char *line)
     }
 }
 
+int check_commas(char *str)
+{
+	int i = 0;
+	int commas = 0;
+	while (str[i])
+	{
+		if (str[i] == ',')
+			commas++;
+		i++;
+	}
+	if (commas != 2)
+		return (1);
+	return (0);
+}
+
 void parse_color(t_data *data, char *line)
 {
     int *color;
@@ -111,6 +134,9 @@ void parse_color(t_data *data, char *line)
 
     while (*ptr == ' ')
         ptr++;
+
+    if (check_commas(ptr))
+        error_exit(data, "Invalid RGB format");
 
     rgb = ft_split(ptr, ',');
     if (!rgb || !rgb[0] || !rgb[1] || !rgb[2] || rgb[3])
@@ -295,6 +321,8 @@ int has_cub_extension(const char *filename)
 
     dot = ft_strrchr(filename, '.');
     if (!dot || dot == filename)
+        return 0;
+    if (filename[ft_strlen(filename) - 5] == '/')
         return 0;
     return (ft_strcmp(dot, ".cub") == 0);
 }
