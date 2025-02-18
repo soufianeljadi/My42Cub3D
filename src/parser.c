@@ -37,9 +37,8 @@ void parse_texture(t_data *data, char *line)
         free(trimmed_path);
         error_exit(data, "Texture path contains spaces");
     }
-
-    if(ft_strcmp(ft_strrchr(trimmed_path, '.'),".xpm") != 0
-     || trimmed_path[ft_strlen(trimmed_path) - 5] == '/')
+    char *dot = ft_strrchr(trimmed_path, '.');
+    if(ft_strcmp(dot,".xpm") != 0 || trimmed_path[ft_strlen(trimmed_path) - 5] == '/')
     {
         free(trimmed_path);
         error_exit(data, "Invalid texture file extension");
@@ -70,6 +69,7 @@ void parse_texture(t_data *data, char *line)
     }
     else if (ft_strcmp(identifier, "WE") == 0)
     {
+        printf("WE\n");
         if (data->has_west_texture)
             error_exit(data, "Duplicate west texture");
         free(data->west_texture);

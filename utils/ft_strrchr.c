@@ -2,6 +2,10 @@
 
 char *ft_strrchr(const char *s, int c) 
 {
+    if(!s)
+        return (NULL);
+    if ((char)c == '\0')
+        return (char *)s + ft_strlen(s);
     const char *last_occurrence = NULL;
 
     while (*s) {
