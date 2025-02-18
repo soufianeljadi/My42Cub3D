@@ -239,6 +239,40 @@ void validate_map(t_data *data)
     int i = 0;
     int j;
 
+    size_t max_len = 0;
+    while (i < data->map_height)
+    {
+        size_t len = ft_strlen(data->map[i]);
+        if (len > max_len)
+            max_len = len;
+        i++;
+    }
+
+    i = 0;
+    while (i < data->map_height)
+    {
+        size_t len = ft_strlen(data->map[i]);
+        if (len < max_len)
+        {
+            char *padded_line = malloc((max_len + 1) * sizeof(char));
+            if (!padded_line)
+                error_exit(data, "Failed to allocate memory for padded line");
+
+            ft_strlcpy(padded_line, data->map[i], len + 1);
+            while (len < max_len)
+            {
+                padded_line[len] = ' ';
+                len++;
+            }
+            padded_line[len] = '\0';
+
+            free(data->map[i]);
+            data->map[i] = padded_line;
+        }
+        i++;
+    }
+
+    i = 0;
     while (i < data->map_height)
     {
         j = 0;
@@ -314,7 +348,6 @@ void validate_map(t_data *data)
         i++;
     }
 }
-
 int has_cub_extension(const char *filename)
 {
     char *dot;
