@@ -69,7 +69,6 @@ void parse_texture(t_data *data, char *line)
     }
     else if (ft_strcmp(identifier, "WE") == 0)
     {
-        printf("WE\n");
         if (data->has_west_texture)
             error_exit(data, "Duplicate west texture");
         free(data->west_texture);
@@ -93,8 +92,11 @@ void parse_texture(t_data *data, char *line)
 
 int check_commas(char *str)
 {
-	int i = 0;
-	int commas = 0;
+    int commas;
+	int i;
+
+    i = 0;
+    commas = 0;
 	while (str[i])
 	{
 		if (str[i] == ',')
@@ -139,7 +141,7 @@ void parse_color(t_data *data, char *line)
         error_exit(data, "Invalid RGB format");
 
     rgb = ft_split(ptr, ',');
-    if (!rgb || !rgb[0] || !rgb[1] || !rgb[2] || rgb[3])
+    if (!rgb || !rgb[0] || !rgb[1] || !rgb[2] || rgb[3] || ft_all_digits(rgb) == 0)
     {
         ft_free_tab(rgb);
         error_exit(data, "Invalid RGB format");
@@ -148,40 +150,11 @@ void parse_color(t_data *data, char *line)
     i = 0;
     while (i < 3)
     {
-        if (!rgb[i] || !*rgb[i])
+        if (!rgb[i] || !*rgb[i] || rgb[i][0] == '\n')
         {
             ft_free_tab(rgb);
             error_exit(data, "Missing RGB value");
         }
-
-        if(ft_strlen(rgb[i]) > 3)
-        {
-            if ((rgb[i][0] && !ft_isdigit(rgb[i][0]) )||
-            (rgb[i][1] && !ft_isdigit((char)rgb[i][1])) ||
-            (rgb[i][2] && !ft_isdigit((char)rgb[i][2])))
-            {
-                ft_free_tab(rgb);
-                error_exit(data, "Invalid RGB value");
-            }
-        }
-        else if(ft_strlen(rgb[i]) > 2)
-        {
-            if ((rgb[i][0] && !ft_isdigit(rgb[i][0]) )||
-            (rgb[i][1] && !ft_isdigit((char)rgb[i][1])))
-            {
-                ft_free_tab(rgb);
-                error_exit(data, "Invalid RGB value");
-            }
-        }
-        else if(ft_strlen(rgb[i]) > 1)
-        {
-            if ((rgb[i][0] && !ft_isdigit(rgb[i][0])))
-            {
-                ft_free_tab(rgb);
-                error_exit(data, "Invalid RGB value");
-            }
-        }
-
         int value = ft_atoi(rgb[i]);
         if (value < 0 || value > 255)
         {
@@ -280,16 +253,13 @@ void validate_map(t_data *data)
     }
 
     i = 0;
-    while (i < data->map_height - 1)
+    while (i < data->map_height)
     {
         int start = 0;
         int end = ft_strlen(data->map[i]) - 1;
 
         while (data->map[i][start] == ' ')
             start++;
-
-        // while (data->map[i][end] == ' ')
-        // end--;
 
         if (data->map[i][start] != '1' || data->map[i][end] != '1')
             error_exit(data, "Map must be surrounded by walls");
@@ -350,6 +320,7 @@ void validate_map(t_data *data)
         i++;
     }
 }
+
 int has_cub_extension(const char *filename)
 {
     char *dot;
@@ -381,6 +352,7 @@ void check_colors(t_data *data)
     if (!data->has_ceiling_color)
         error_exit(data, "Missing ceiling color");
 }
+
 void parse_cub_file(t_data *data, const char *filename)
 {
     if (!has_cub_extension(filename))

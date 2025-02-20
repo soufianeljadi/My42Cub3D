@@ -67,5 +67,5 @@ int	    ft_strlcpy(char *dst, const char *src, int dstsize);
 char    *ft_strrchr(const char *s, int c);
 char    *ft_strtrim(char const *s, char const *set);
 int 	ft_isdigit(int c);
-
+int 	ft_all_digits(char **str);
 #endif
