@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   gnl.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/01 15:42:38 by sel-jadi          #+#    #+#             */
+/*   Updated: 2025/03/01 15:42:41 by sel-jadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
@@ -97,5 +108,5 @@ char	*get_next_line(int fd)
 	}
 	line = ft_line(start_str);
 	start_str = ft_move_start(start_str);
-	return (line); 
+	return (line);
 }
