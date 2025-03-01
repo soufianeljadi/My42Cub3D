@@ -4,9 +4,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <math.h>
 #include <unistd.h>
-
+#include "../MLX42/include/MLX42/MLX42.h"
 #define MAX_LINE_LENGTH 1024
+
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
+#define TILE  64
+#define FOV (M_PI/ 3)
+
+
+typedef struct s_player {
+	double x;
+	double y;
+	double dir;
+} t_player;
+
+
+// mlx_t *mlx;
+// char **map;
+// mlx_image_t *img;
 
 typedef struct s_data {
 	char *north_texture;
@@ -31,6 +49,13 @@ typedef struct s_data {
 } t_data;
 
 
+typedef struct s_params{
+	mlx_t *mlx;
+	char **map;
+	mlx_image_t *img;
+	t_player player;
+	t_data data;
+}t_params;
 void parse_cub_file(t_data *data, const char *filename);
 void parse_texture(t_data *data, char *line);
 void parse_color(t_data *data, char *line);

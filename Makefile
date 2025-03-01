@@ -7,12 +7,14 @@ SRCS = src/main.c src/parser.c \
 OBJS = $(SRCS:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror #-fsanitize=address -g3
+CFLAGS =-fsanitize=address -g3 #-Wall -Wextra -Werror 
+MLX42= MLX42/libmlx42.a
+MLXFLAGS = -Iinclude -ldl -lglfw -pthread -lm
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) $(MLX42) $(MLXFLAGS) -o $(NAME)
 
 %.o : %.c /includes/cub3d.h
 	$(CC) $(CFLAGS) -c $< -o $@
