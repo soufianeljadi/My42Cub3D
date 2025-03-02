@@ -55,6 +55,8 @@ typedef struct s_params{
 	mlx_image_t *img;
 	t_player player;
 	t_data data;
+	int height;
+	int width;
 }t_params;
 void parse_cub_file(t_data *data, const char *filename);
 void parse_texture(t_data *data, char *line);

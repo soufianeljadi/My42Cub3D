@@ -62,33 +62,29 @@ void draw_map(char **map,mlx_image_t *img,mlx_t *mlx)
     }
     mlx_image_to_window(mlx,img,0,0);
 }
-// void dda_line(t_params *params)
-// {
-//     int dx, dy, steps, x, y;
-//     float x_inc, y_inc;
+void dda_line(t_params *params,mlx_image_t  *img,double dest_x, double dest_y)
+{
+    double dx, dy, steps, x, y;
+    float x_inc, y_inc;
 
-//     dx = data->dest_x - data->player_x;
-//     dy = data->dest_y - data->player_y;
+    dx = dest_x - params->player.x;
+    dy = dest_y - params->player.y;
 
-//     // Determine the number of steps needed to draw the line
-//     steps = (abs(dx) > abs(dy)) ? abs(dx) : abs(dy);
+    steps = (fabs(dx) > fabs(dy)) ? fabs(dx) : fabs(dy);
 
-//     // Calculate the increment for each step
-//     x_inc = (float)dx / steps;
-//     y_inc = (float)dy / steps;
+    x_inc = (float)dx / steps;
+    y_inc = (float)dy / steps;
 
-//     // Start from the player's position
-//     x = data->player_x;
-//     y = data->player_y;
-
-//     // Draw the line
-//     for (int i = 0; i <= steps; i++) {
-//         mlx_put_pixel(data, round(x), round(y));
-//         x += x_inc;
-//         y += y_inc;
-//     }
-// }
-void draw_circle(mlx_image_t *img, mlx_t *mlx,int center_x, int center_y, int radius) {
+    x = params->player.x;
+    y = params->player.y;
+    for (int i = 0; i <= steps; i++){
+        if((x > 0 && x < params->width) && (y > 0 && y < params->height) )
+        mlx_put_pixel(img, x, y, 0x00ffffff);
+        x += x_inc;
+        y += y_inc;
+    }
+}
+void draw_circle(mlx_image_t *img, mlx_t *mlx,double center_x, double center_y, int radius) {
     int x = radius;
     int y = 0;
     int decision_over2 = 1 - x;  // Midpoint decision parameter
@@ -120,9 +116,10 @@ void draw_player(t_params * params)
     static mlx_image_t *img;
     if(img)
         mlx_delete_image(params->mlx,img);
-    img = mlx_new_image(params->mlx,30,30);
-    draw_circle(img,params->mlx,15,15,10);
-    mlx_image_to_window(params->mlx,img,player.x - 30 /2 ,player.y - 30 / 2);
+    img = mlx_new_image(params->mlx,params->width,params->height);
+    draw_circle(img,params->mlx,player.x,player.y,10);
+    dda_line(params,img,sin(params->player.dir) * 50.2 + params->player.x,cos(params->player.dir) * 50.2 + params->player.y);
+    mlx_image_to_window(params->mlx,img,0,0);
 }
 
 void set_to_pos(t_params *params, double x, double y)
@@ -142,21 +139,25 @@ void set_to_pos(t_params *params, double x, double y)
 void player_movement(t_params *params)
 {
     if(mlx_is_key_down(params->mlx,MLX_KEY_RIGHT))
-        params->player.dir +=0.05;
-    if(mlx_is_key_down(params->mlx,MLX_KEY_LEFT))
         params->player.dir -=0.05;
+    if(mlx_is_key_down(params->mlx,MLX_KEY_LEFT))
+        params->player.dir +=0.05;
     if(params->player.dir < 0)
         params->player.dir+= M_PI * 2;
     if(params->player.dir > 2 * M_PI)
         params->player.dir -=2 * M_PI;
     if(mlx_is_key_down(params->mlx,MLX_KEY_W))
     {
-        double t_x = params->player.x + (params->player.dir) * 3.0;
-        double t_y = params->player.y + (params->player.dir) * 3.0;
+        double t_x = params->player.x + sin(params->player.dir) * 3.0;
+        double t_y = params->player.y + cos(params->player.dir) * 3.0;
         set_to_pos(params,t_x,t_y);
     }
     if(mlx_is_key_down(params->mlx,MLX_KEY_S))
-        set_to_pos(params,params->player.x,params->player.y+10);
+    {
+        double t_x = params->player.x - sin(params->player.dir) * 3.0;
+        double t_y = params->player.y - cos(params->player.dir) * 3.0;
+        set_to_pos(params,t_x,t_y);
+    }
     if(mlx_is_key_down(params->mlx,MLX_KEY_A))
         set_to_pos(params,params->player.x-10,params->player.y);
     if(mlx_is_key_down(params->mlx,MLX_KEY_D))
@@ -183,6 +184,8 @@ int main()
     // t_player player;
     set_postion(&params.player,params.map);
     params.mlx = mlx_init(TILE*strlen(*params.map),TILE * 10,"2d map",false);
+    params.width = TILE * strlen(*params.map);
+    params.height = TILE * 10;
     params.img = mlx_new_image(params.mlx,TILE*strlen(*params.map),TILE * 10);
     draw_map(params.map,params.img,params.mlx);
     mlx_loop_hook(params.mlx,key_hook,&params);
