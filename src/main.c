@@ -159,9 +159,17 @@ void player_movement(t_params *params)
         set_to_pos(params,t_x,t_y);
     }
     if(mlx_is_key_down(params->mlx,MLX_KEY_A))
-        set_to_pos(params,params->player.x-10,params->player.y);
+    {
+    double t_x = params->player.x + sin(params->player.dir + M_PI / 2) * 3.0;
+    double t_y = params->player.y + cos(params->player.dir + M_PI / 2) * 3.0;
+        set_to_pos(params,t_x,t_y);
+    }
     if(mlx_is_key_down(params->mlx,MLX_KEY_D))
-        set_to_pos(params,params->player.x+10,params->player.y);
+    {
+        double t_x = params->player.x + sin(params->player.dir - M_PI / 2) * 3.0;
+        double t_y = params->player.y + cos(params->player.dir - M_PI / 2) * 3.0;
+        set_to_pos(params,t_x,t_y);
+    }
 }
 void key_hook(void *data)
 {
