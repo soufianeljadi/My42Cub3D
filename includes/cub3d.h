@@ -14,12 +14,63 @@
 #define TILE  64
 #define FOV (M_PI/ 3)
 
+typedef struct s_params{
+	mlx_t *mlx;
+	char **map;
+	mlx_image_t *img;
+	t_player player;
+	t_data data;
+	int height;
+	int width;
+}t_params;
 
 typedef struct s_player {
-	double x;
-	double y;
-	double dir;
+    double x;
+    double y;
+    double dir;
+    double plane_x;
+    double plane_y;
+    double move_speed;
+    double rot_speed;
 } t_player;
+
+typedef struct s_ray {
+    double dir_x;
+    double dir_y;
+    double side_dist_x;
+    double side_dist_y;
+    double delta_dist_x;
+    double delta_dist_y;
+    double perp_wall_dist;
+    int map_x;
+    int map_y;
+    int step_x;
+    int step_y;
+    int hit;
+    int side;
+} t_ray;
+
+typedef struct s_map {
+    char **grid;
+    int width;
+    int height;
+} t_map;
+
+typedef struct s_render {
+    mlx_image_t *img;
+    int screen_width;
+    int screen_height;
+    int floor_color;
+    int ceiling_color;
+    int *textures[8];
+} t_render;
+
+typedef struct s_game {
+    t_player player;
+    t_map map;
+    t_render render;
+    mlx_t *mlx;
+} t_game;
 
 
 // mlx_t *mlx;
@@ -49,15 +100,6 @@ typedef struct s_data {
 } t_data;
 
 
-typedef struct s_params{
-	mlx_t *mlx;
-	char **map;
-	mlx_image_t *img;
-	t_player player;
-	t_data data;
-	int height;
-	int width;
-}t_params;
 void parse_cub_file(t_data *data, const char *filename);
 void parse_texture(t_data *data, char *line);
 void parse_color(t_data *data, char *line);
