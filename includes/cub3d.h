@@ -14,15 +14,27 @@
 #define TILE  64
 #define FOV (M_PI/ 3)
 
-typedef struct s_params{
-	mlx_t *mlx;
-	char **map;
-	mlx_image_t *img;
-	t_player player;
-	t_data data;
-	int height;
-	int width;
-}t_params;
+typedef struct s_data {
+    char *north_texture;
+    char *south_texture;
+    char *west_texture;
+    char *east_texture;
+    int floor_color[3];
+    int ceiling_color[3];
+    char **map;
+    int map_width;
+    int map_height;
+    int map_capacity;
+    int player_x;
+    int player_y;
+    char player_dir;
+    int has_north_texture;
+    int has_south_texture;
+    int has_west_texture;
+    int has_east_texture;
+    int has_floor_color;
+    int has_ceiling_color;
+} t_data;
 
 typedef struct s_player {
     double x;
@@ -34,7 +46,19 @@ typedef struct s_player {
     double rot_speed;
 } t_player;
 
+typedef struct s_params{
+	mlx_t *mlx;
+	char **map;
+	mlx_image_t *img;
+	t_player player;
+	t_data data;
+	int height;
+	int width;
+}t_params;
+
+
 typedef struct s_ray {
+    double angle;
     double dir_x;
     double dir_y;
     double side_dist_x;
@@ -42,10 +66,13 @@ typedef struct s_ray {
     double delta_dist_x;
     double delta_dist_y;
     double perp_wall_dist;
+    double distance;
     int map_x;
     int map_y;
     int step_x;
     int step_y;
+    int facing_up;
+    int facing_right;
     int hit;
     int side;
 } t_ray;
@@ -77,27 +104,6 @@ typedef struct s_game {
 // char **map;
 // mlx_image_t *img;
 
-typedef struct s_data {
-	char *north_texture;
-	char *south_texture;
-	char *west_texture;
-	char *east_texture;
-	int floor_color[3];
-	int ceiling_color[3];
-	char **map;
-	int map_width;
-	int map_height;
-	int map_capacity;
-	int player_x;
-	int player_y;
-	char player_dir;
-	int has_north_texture;
-    int has_south_texture;
-    int has_west_texture;
-    int has_east_texture;
-	int has_floor_color;
-    int has_ceiling_color;
-} t_data;
 
 
 void parse_cub_file(t_data *data, const char *filename);

@@ -9,11 +9,11 @@ char **get_map()
     map[1] = strdup("10000000000000001");
     map[2] = strdup("10010001000100001");
     map[3] = strdup("10010000000001001");
-    map[4] = strdup("10010001000001001");
+    map[4] = strdup("1001001000001001");
     map[5] = strdup("10010000000001001");
     map[6] = strdup("10010000000000001");
     map[7] = strdup("10000001000010001");
-    map[8] = strdup("100100000000P1001");
+    map[8] = strdup("1001P000000001001");
     map[9] = strdup("11111111111111111");
     map[10] = NULL;
     return map;
@@ -32,7 +32,7 @@ void set_postion(t_player *player, char **map)
             {
                 player->x = (x* TILE) + TILE / 2;
                 player->y = (y * TILE) + TILE / 2;
-                player->dir = 3 * (M_PI/ 2);
+                player->dir = M_PI;
                 return;
             }
             x++;
@@ -79,7 +79,33 @@ void dda_line(t_params *params,mlx_image_t  *img,double dest_x, double dest_y)
     y = params->player.y;
     for (int i = 0; i <= steps; i++){
         if((x > 0 && x < params->width) && (y > 0 && y < params->height) )
-        mlx_put_pixel(img, x, y, 0x00ffffff);
+            mlx_put_pixel(img, x, y, 0x00ffffff);
+        x += x_inc;
+        y += y_inc;
+    }
+}
+void dda_line2(t_params *params,mlx_image_t  *img,double dest_x, double dest_y)
+{
+    double dx, dy, steps, x, y;
+    float x_inc, y_inc;
+
+    dx = dest_x - params->player.x;
+    dy = dest_y - params->player.y;
+
+    steps = (fabs(dx) > fabs(dy)) ? fabs(dx) : fabs(dy);
+
+    x_inc = (float)dx / steps;
+    y_inc = (float)dy / steps;
+
+    x = params->player.x;
+    y = params->player.y;
+    for (int i = 0; i <= steps; i++){
+        if((x > 0 && x < params->width) && (y > 0 && y < params->height))
+        {
+            if(params->map[(int)(y / TILE)][(int)(x/TILE)] == '1')
+                return;
+            mlx_put_pixel(img, x, y, 0x00ffffff);
+        }
         x += x_inc;
         y += y_inc;
     }
@@ -110,7 +136,59 @@ void draw_circle(mlx_image_t *img, mlx_t *mlx,double center_x, double center_y, 
         }
     }
 }
-void draw_player(t_params * params)
+void get_hers_inter(t_params *params, t_ray *ray)
+{
+    float a_y,a_x;
+    float y_step,x_step;
+    a_y = floor(params->player.y / TILE) * TILE;
+    if(!ray->facing_up)
+        a_y+=TILE;
+    else
+        a_y-=0.1;
+    a_x = ((params->player.y - a_y) * tan(ray->angle)) + params->player.x;
+    y_step  = TILE;
+    if(ray->facing_up)
+        y_step=-y_step;
+    x_step = y_step * tan(ray->angle);
+    if(!ray->facing_right)
+         x_step=-x_step;
+    while(a_y > 0 && a_y < TILE * 10 && a_x > 0 && a_x < TILE*strlen(*params->map))
+    {
+        int map_y = a_y / TILE;
+        int map_x = a_x / TILE;
+        if(params->map[map_y][map_x] == '1')
+        {
+            ray->distance= sqrt(pow(a_y-params->player.y,2) + pow(a_x-params->player.x,2));
+            return;
+        }
+        a_y+=y_step;
+        a_x+=x_step;
+    }
+    
+}
+void cast_rays(t_params *params, mlx_image_t *img)
+{
+    int x = 0;
+    int screen_width = TILE*strlen(*params->map);
+    t_ray ray;
+
+    // ray.r_angle = cub->player->r_angle - (FOV / 2) + (i * (FOV / SCREEN_WIDTH));
+    
+    while(x < screen_width)
+    {
+        if (x == screen_width/2)
+            printf("%f\n",params->player.dir);
+        ray.angle = params->player.dir - (FOV / 2) + ((FOV / screen_width) * x);
+        ray.facing_up = ray.angle < 3 * M_PI/2 && ray.angle > M_PI / 2;
+        ray.facing_right = !(ray.angle > M_PI);
+        get_hers_inter(params,&ray);
+        dda_line(params,img,sin(ray.angle) * fabs(ray.distance) + params->player.x,cos(ray.angle) *fabs(ray.distance) + params->player.y);
+
+//        dda_line2(params,img,sin(ray.angle) * 1000.2 + params->player.x,cos(ray.angle) * 1000.2 + params->player.y);
+        x++;
+    }
+}
+void cast_player(t_params * params)
 {
     t_player player = params->player;
     static mlx_image_t *img;
@@ -118,13 +196,13 @@ void draw_player(t_params * params)
         mlx_delete_image(params->mlx,img);
     img = mlx_new_image(params->mlx,params->width,params->height);
     draw_circle(img,params->mlx,player.x,player.y,10);
-    dda_line(params,img,sin(params->player.dir) * 50.2 + params->player.x,cos(params->player.dir) * 50.2 + params->player.y);
+    cast_rays(params,img);
     mlx_image_to_window(params->mlx,img,0,0);
 }
 
 void set_to_pos(t_params *params, double x, double y)
 {
-    printf("%f %f %f\n",params->player.dir,y,x);
+    // printf("%f %f %f\n",params->player.dir,y,x);
     if(params->map[(int)(y/TILE)][(int)(x/TILE)] != '1')
     {
         params->player.x = x;
@@ -177,7 +255,7 @@ void key_hook(void *data)
     if(mlx_is_key_down(params->mlx,MLX_KEY_ESCAPE))
         exit(0);
     player_movement(params);
-    draw_player(params);
+    cast_player(params);
 }
 
 void set_value(t_data data,t_params *params)
