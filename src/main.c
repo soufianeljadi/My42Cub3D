@@ -7,13 +7,13 @@ char **get_map()
     char **map = calloc(sizeof(char*) ,11);
     map[0] = strdup("11111111111111111");
     map[1] = strdup("10000000000000001");
-    map[2] = strdup("10010001000100001");
+    map[2] = strdup("10010001010100001");
     map[3] = strdup("10010000000001001");
-    map[4] = strdup("1001001000001001");
+    map[4] = strdup("100100100P001001");
     map[5] = strdup("10010000000001001");
     map[6] = strdup("10010000000000001");
     map[7] = strdup("10000001000010001");
-    map[8] = strdup("1001P000000001001");
+    map[8] = strdup("10010000000001001");
     map[9] = strdup("11111111111111111");
     map[10] = NULL;
     return map;
@@ -32,7 +32,7 @@ void set_postion(t_player *player, char **map)
             {
                 player->x = (x* TILE) + TILE / 2;
                 player->y = (y * TILE) + TILE / 2;
-                player->dir = M_PI;
+                player->dir = 0;
                 return;
             }
             x++;
@@ -138,33 +138,92 @@ void draw_circle(mlx_image_t *img, mlx_t *mlx,double center_x, double center_y, 
 }
 void get_hers_inter(t_params *params, t_ray *ray)
 {
-    float a_y,a_x;
-    float y_step,x_step;
+    double a_y,a_x;
+    double y_step,x_step;
     a_y = floor(params->player.y / TILE) * TILE;
     if(!ray->facing_up)
         a_y+=TILE;
     else
-        a_y-=0.1;
-    a_x = ((params->player.y - a_y) * tan(ray->angle)) + params->player.x;
+        a_y-=0.01;
+    //ax = player_x + (ay - player_y) / tan(ray_angle);
+    a_x = (( a_y - params->player.y) / tan(ray->angle)) + params->player.x;
     y_step  = TILE;
     if(ray->facing_up)
         y_step=-y_step;
-    x_step = y_step * tan(ray->angle);
-    if(!ray->facing_right)
-         x_step=-x_step;
+    x_step = y_step / tan(ray->angle);
     while(a_y > 0 && a_y < TILE * 10 && a_x > 0 && a_x < TILE*strlen(*params->map))
     {
         int map_y = a_y / TILE;
         int map_x = a_x / TILE;
         if(params->map[map_y][map_x] == '1')
         {
-            ray->distance= sqrt(pow(a_y-params->player.y,2) + pow(a_x-params->player.x,2));
+            ray->hor_dis= sqrt(pow(a_y-params->player.y,2) + pow(a_x-params->player.x,2));
             return;
         }
         a_y+=y_step;
         a_x+=x_step;
     }
+    ray->distance = 0;
+  ray->hor_dis = ray->ver_dis;
     
+}
+
+void get_verts_inter(t_params *params, t_ray *ray)
+{
+    double a_y,a_x;
+    double y_step,x_step;
+    a_x = floor(params->player.x / TILE) * TILE;
+    if(ray->facing_right)
+        a_x+=TILE;
+    else
+        a_x-=0.01;
+    a_y = (( a_x - params->player.x) * tan(ray->angle)) + params->player.y;
+    x_step  = TILE;
+    if(!ray->facing_right)
+    x_step=-x_step;
+    y_step = x_step * tan(ray->angle);
+    while(a_y > 0 && a_y < TILE * 10 && a_x > 0 && a_x < TILE*strlen(*params->map))
+    {
+        int map_y = a_y / TILE;
+        int map_x = a_x / TILE;
+        if(params->map[map_y][map_x] == '1')
+        {
+            ray->ver_dis = fmin(sqrt(pow(a_y-params->player.y,2) + pow(a_x-params->player.x,2)),ray->hor_dis);
+            return;
+        }
+        a_y+=y_step;
+        a_x+=x_step;
+    }
+    ray->ver_dis = ray->hor_dis;
+    
+}
+void draw_wall(t_params *params, t_ray ray, mlx_image_t *img, int x)
+{
+    int wall_hieght =  TILE * TILE * 10 / ray.distance;
+
+    int wall_start = TILE * 10 / 2 - wall_hieght / 2;
+    int wall_end = TILE * 10 / 2 + wall_hieght / 2;
+    int y = 0;
+
+    while(y < wall_start)
+    {
+        if(y > 0 && y < 10 * TILE)
+        mlx_put_pixel(img, x,y,0x0000ffff);
+        y++;
+    }
+    while(y < wall_end)
+    {
+        if(y > 0 && y < 10 * TILE)
+        mlx_put_pixel(img,x,y,0xff0000ff);
+        y++;
+    }
+    while(y < 10 * TILE)
+    {
+        if(y > 0 && y < 10 * TILE)
+            mlx_put_pixel(img,x,y,0x0000ffff);
+        y++;
+    }
+
 }
 void cast_rays(t_params *params, mlx_image_t *img)
 {
@@ -172,18 +231,22 @@ void cast_rays(t_params *params, mlx_image_t *img)
     int screen_width = TILE*strlen(*params->map);
     t_ray ray;
 
-    // ray.r_angle = cub->player->r_angle - (FOV / 2) + (i * (FOV / SCREEN_WIDTH));
+    // ray_angle = player_angle - (FOV / 2) + (x * (FOV / SCREEN_WIDTH));
     
     while(x < screen_width)
     {
         if (x == screen_width/2)
             printf("%f\n",params->player.dir);
-        ray.angle = params->player.dir - (FOV / 2) + ((FOV / screen_width) * x);
-        ray.facing_up = ray.angle < 3 * M_PI/2 && ray.angle > M_PI / 2;
-        ray.facing_right = !(ray.angle > M_PI);
+        ray.angle = params->player.dir - (FOV / 2.0) + ((FOV / screen_width) * x);
+        ray.facing_up = ray.angle > M_PI && ray.angle < M_PI * 2;
+        ray.facing_right = !(ray.angle < 3 * M_PI/2 && ray.angle > M_PI / 2);
+        // wall_height = (TILE * SCREEN_HEIGHT) / ray.distance;
+        //ray.distance = 1500.0;
         get_hers_inter(params,&ray);
-        dda_line(params,img,sin(ray.angle) * fabs(ray.distance) + params->player.x,cos(ray.angle) *fabs(ray.distance) + params->player.y);
-
+        get_verts_inter(params,&ray);
+        ray.distance = fmin(ray.hor_dis,ray.ver_dis);
+        dda_line(params,img,cos(ray.angle) * fabs(ray.distance) + params->player.x,sin(ray.angle) *fabs(ray.distance) + params->player.y);
+        // draw_wall(params,ray,img,x);
 //        dda_line2(params,img,sin(ray.angle) * 1000.2 + params->player.x,cos(ray.angle) * 1000.2 + params->player.y);
         x++;
     }
@@ -195,7 +258,9 @@ void cast_player(t_params * params)
     if(img)
         mlx_delete_image(params->mlx,img);
     img = mlx_new_image(params->mlx,params->width,params->height);
-    draw_circle(img,params->mlx,player.x,player.y,10);
+   // draw_circle(img,params->mlx,player.x,player.y,10);
+   // dda_line2(params,img,cos(params->player.dir) * 1000.2 + params->player.x,sin(params->player.dir) * 1000.2 + params->player.y);
+    //printf("%f\n",params->player.dir);
     cast_rays(params,img);
     mlx_image_to_window(params->mlx,img,0,0);
 }
@@ -210,44 +275,46 @@ void set_to_pos(t_params *params, double x, double y)
     }
 }
 
-// x sin
-//y cos
+// x cos
+//y sin
 
 
 void player_movement(t_params *params)
 {
     if(mlx_is_key_down(params->mlx,MLX_KEY_RIGHT))
-        params->player.dir -=0.05;
-    if(mlx_is_key_down(params->mlx,MLX_KEY_LEFT))
         params->player.dir +=0.05;
+    if(mlx_is_key_down(params->mlx,MLX_KEY_LEFT))
+        params->player.dir -=0.05;
     if(params->player.dir < 0)
         params->player.dir+= M_PI * 2;
     if(params->player.dir > 2 * M_PI)
         params->player.dir -=2 * M_PI;
     if(mlx_is_key_down(params->mlx,MLX_KEY_W))
     {
-        double t_x = params->player.x + sin(params->player.dir) * 3.0;
-        double t_y = params->player.y + cos(params->player.dir) * 3.0;
+        double t_x = params->player.x + cos(params->player.dir) * 3.0;
+        double t_y = params->player.y +  sin(params->player.dir) * 3.0;
         set_to_pos(params,t_x,t_y);
     }
     if(mlx_is_key_down(params->mlx,MLX_KEY_S))
     {
-        double t_x = params->player.x - sin(params->player.dir) * 3.0;
-        double t_y = params->player.y - cos(params->player.dir) * 3.0;
-        set_to_pos(params,t_x,t_y);
-    }
-    if(mlx_is_key_down(params->mlx,MLX_KEY_A))
-    {
-    double t_x = params->player.x + sin(params->player.dir + M_PI / 2) * 3.0;
-    double t_y = params->player.y + cos(params->player.dir + M_PI / 2) * 3.0;
+        double t_x = params->player.x - cos(params->player.dir) * 3.0;
+        double t_y = params->player.y -  sin(params->player.dir) * 3.0;
         set_to_pos(params,t_x,t_y);
     }
     if(mlx_is_key_down(params->mlx,MLX_KEY_D))
     {
-        double t_x = params->player.x + sin(params->player.dir - M_PI / 2) * 3.0;
-        double t_y = params->player.y + cos(params->player.dir - M_PI / 2) * 3.0;
+    double t_x = params->player.x + cos(params->player.dir + M_PI / 2) * 3.0;
+    double t_y = params->player.y + sin(params->player.dir + M_PI / 2) * 3.0;
         set_to_pos(params,t_x,t_y);
     }
+    if(mlx_is_key_down(params->mlx,MLX_KEY_A))
+    {
+        double t_x = params->player.x + cos(params->player.dir - M_PI / 2) * 3.0;
+        double t_y = params->player.y +  sin(params->player.dir - M_PI / 2) * 3.0;
+        set_to_pos(params,t_x,t_y);
+    }
+    if(mlx_is_key_down(params->mlx,MLX_KEY_ESCAPE))
+        exit(0);
 }
 void key_hook(void *data)
 {
