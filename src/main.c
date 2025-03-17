@@ -163,8 +163,8 @@ void get_hers_inter(t_params *params, t_ray *ray)
         a_y+=y_step;
         a_x+=x_step;
     }
-    ray->distance = 0;
-  ray->hor_dis = ray->ver_dis;
+    ray->distance = 10000;
+  ray->hor_dis = 2000;
     
 }
 
@@ -194,7 +194,7 @@ void get_verts_inter(t_params *params, t_ray *ray)
         a_y+=y_step;
         a_x+=x_step;
     }
-    ray->ver_dis = ray->hor_dis;
+    ray->ver_dis = 2000;
     
 }
 void draw_wall(t_params *params, t_ray ray, mlx_image_t *img, int x)
