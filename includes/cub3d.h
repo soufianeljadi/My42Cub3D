@@ -6,11 +6,12 @@
 #include <fcntl.h>
 #include <math.h>
 #include <unistd.h>
+#include <limits.h>
 #include "../MLX42/include/MLX42/MLX42.h"
 #define MAX_LINE_LENGTH 1024
 
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 720
+#define SCREEN_WIDTH 1800
+#define SCREEN_HEIGHT 1200
 #define TILE  64
 #define FOV (M_PI/ 3)
 
