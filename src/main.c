@@ -144,7 +144,7 @@ void get_hers_inter(t_params *params, t_ray *ray)
     if(!ray->facing_up)
         a_y+=TILE;
     else
-        a_y-=0.01;
+        a_y-= 10e-5;
     //ax = player_x + (ay - player_y) / tan(ray_angle);
     a_x = (( a_y - params->player.y) / tan(ray->angle)) + params->player.x;
     y_step  = TILE;
@@ -175,7 +175,7 @@ void get_verts_inter(t_params *params, t_ray *ray)
     if(ray->facing_right)
         a_x+=TILE;
     else
-        a_x-=0.01;
+        a_x-=10e-5;
     a_y = (( a_x - params->player.x) * tan(ray->angle)) + params->player.y;
     x_step  = TILE;
     if(!ray->facing_right)
@@ -210,7 +210,7 @@ void draw_wall(t_params *params, t_ray ray, mlx_image_t *img, int x)
     if(ray.hor_dis < ray.ver_dis)
     {
         if(ray.facing_up)
-            color = 0xff0000;
+            color = 0x550070;
         else
             color = 0xff0000/2;
     }
@@ -259,8 +259,8 @@ void cast_rays(t_params *params, mlx_image_t *img)
             ray.angle+=2 * M_PI;
         if(ray.angle>2 * M_PI)
             ray.angle-=2 * M_PI;
-        ray.facing_up = ray.angle > M_PI && ray.angle < M_PI * 2;
-        ray.facing_right = !(ray.angle < 3 * M_PI/2 && ray.angle > M_PI / 2);
+        ray.facing_up = ray.angle >= M_PI && ray.angle <= M_PI * 2;
+        ray.facing_right = !(ray.angle <= 3 * M_PI/2 && ray.angle >= M_PI / 2);
         // wall_height = (TILE * SCREEN_HEIGHT) / ray.distance;
         //ray.distance = 1500.0;
         ray.hor_dis = INT_MAX;
@@ -294,17 +294,20 @@ void cast_player(t_params * params)
 
 void set_to_pos(t_params *params, double x, double y)
 {
-    // printf("%f %f %f\n",params->player.dir,y,x);
-    if(params->map[(int)(y/TILE)][(int)(x/TILE)] != '1')
+    float   radius = 3.0;
+    for (float i = -radius; i <= radius; i+=radius)
     {
+        for (float j = -radius; j <= radius; j+=radius)
+        {
+            int map_y = (y + j) / TILE;
+            int map_x = (x + i) / TILE;
+            if (params->map[map_y][map_x] == '1')
+                return ;
+        }
+    }
         params->player.x = x;
         params->player.y = y;
-    }
 }
-
-// x cos
-//y sin
-
 
 void player_movement(t_params *params)
 {
