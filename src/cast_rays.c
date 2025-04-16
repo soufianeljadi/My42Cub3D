@@ -31,28 +31,6 @@ void set_position(t_player *player, char **map, t_data *data)
     }
 }
 
-void draw_map(char **map,mlx_image_t *img,mlx_t *mlx)
-{
-    int x,y;
-    int width =TILE * strlen(*map);
-    int height = TILE * 10;
-    y = 0;
-    while(y < height)
-    { 
-        x = 0;
-        while(x < width)
-        {
-            if(map[y/TILE][x /TILE] == '1')
-                mlx_put_pixel(img,x,y,0xff0000);
-            else
-                mlx_put_pixel(img,x,y,0xffffffff);
-            x++;
-        }
-        y++;
-    }
-    mlx_image_to_window(mlx,img,0,0);
-}
-
 void get_hers_inter(t_params *params, t_ray *ray)
 {
     double a_y,a_x;
@@ -173,7 +151,6 @@ void cast_rays(t_params *params, mlx_image_t *img)
             printf("%f\n",ray.angle);
         get_hers_inter(params,&ray);
         get_verts_inter(params,&ray);
-    
         ray.distance = fmin(ray.hor_dis,ray.ver_dis);
         ray.distance*=cos(params->player.dir-ray.angle);
         draw_wall(params,ray,img,x);
@@ -301,7 +278,6 @@ int main(int ac, char **av)
     params.width = TILE * strlen(*params.map);
     params.height = TILE * data.map_height;
     params.img = mlx_new_image(params.mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
-    draw_map(params.map,params.img,params.mlx);
     mlx_loop_hook(params.mlx,key_hook,&params);
     mlx_loop(params.mlx);
     return 0;
