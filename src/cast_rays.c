@@ -2,27 +2,31 @@
 #include "../MLX42/include/MLX42/MLX42.h"
 #include <string.h>
 
-void set_postion(t_player *player, char **map, t_data *data)
+void set_position(t_player *player, char **map, t_data *data)
 {
-    int x,y;
+    int x, y;
 
     y = 0;
-    int k = 0;
-    while(y < data->map_height)
+    while (y < data->map_height)
     {
         x = 0;
-        while(map[y][x])
+        while (map[y][x])
         {
-            if(ft_strchr("N",map[y][x]))
+            if (ft_strchr("NSEW", map[y][x]))
             {
-                player->x = (x* TILE) + TILE / 2;
+                player->x = (x * TILE) + TILE / 2;
                 player->y = (y * TILE) + TILE / 2;
                 player->dir = 0;
+                if (map[y][x] == 'N')
+                    player->dir = 3 * M_PI / 2;
+                else if (map[y][x] == 'S')
+                    player->dir = M_PI / 2;
+                else if (map[y][x] == 'W')
+                    player->dir = M_PI;
                 return;
             }
             x++;
         }
-        k =0 ;
         y++;
     }
 }
@@ -211,59 +215,80 @@ void set_to_pos(t_params *params, double x, double y)
         params->player.y = y;
 }
 
+void player_rotation(t_params *params)
+{
+    if (mlx_is_key_down(params->mlx, MLX_KEY_RIGHT))
+        params->player.dir += 0.05;
+    if (mlx_is_key_down(params->mlx, MLX_KEY_LEFT))
+        params->player.dir -= 0.05;
+    if (params->player.dir < 0)
+        params->player.dir += M_PI * 2;
+    if (params->player.dir > 2 * M_PI)
+        params->player.dir -= 2 * M_PI;
+}
+
+void calculate_new_position(t_params *params, double angle_offset, double *t_x, double *t_y)
+{
+    double move_angle = params->player.dir + angle_offset;
+    double move_speed = 3.0;
+    
+    *t_x = params->player.x + cos(move_angle) * move_speed;
+    *t_y = params->player.y + sin(move_angle) * move_speed;
+}
+
+void forward_backward(t_params *params)
+{
+    double t_x, t_y;
+    
+    if (mlx_is_key_down(params->mlx, MLX_KEY_W))
+    {
+        calculate_new_position(params, 0, &t_x, &t_y);
+        set_to_pos(params, t_x, t_y);
+    }
+    
+    if (mlx_is_key_down(params->mlx, MLX_KEY_S))
+    {
+        calculate_new_position(params, M_PI, &t_x, &t_y);
+        set_to_pos(params, t_x, t_y);
+    }
+}
+
+void move_sideways(t_params *params)
+{
+    double t_x, t_y;
+    
+    if (mlx_is_key_down(params->mlx, MLX_KEY_D))
+    {
+        calculate_new_position(params, M_PI / 2, &t_x, &t_y);
+        set_to_pos(params, t_x, t_y);
+    }
+    
+    if (mlx_is_key_down(params->mlx, MLX_KEY_A))
+    {
+        calculate_new_position(params, -M_PI / 2, &t_x, &t_y);
+        set_to_pos(params, t_x, t_y);
+    }
+}
+
 void player_movement(t_params *params)
 {
-    double t_x;
-    double t_y;
-
-    if(mlx_is_key_down(params->mlx,MLX_KEY_RIGHT))
-        params->player.dir +=0.05;
-    if(mlx_is_key_down(params->mlx,MLX_KEY_LEFT))
-        params->player.dir -=0.05;
-    if(params->player.dir < 0)
-        params->player.dir+= M_PI * 2;
-    if(params->player.dir > 2 * M_PI)
-        params->player.dir -=2 * M_PI;
-    if(mlx_is_key_down(params->mlx,MLX_KEY_W))
-    {
-        t_x = params->player.x + cos(params->player.dir) * 3.0;
-        t_y = params->player.y +  sin(params->player.dir) * 3.0;
-        set_to_pos(params,t_x,t_y);
-    }
-    if(mlx_is_key_down(params->mlx,MLX_KEY_S))
-    {
-        t_x = params->player.x - cos(params->player.dir) * 3.0;
-        t_y = params->player.y -  sin(params->player.dir) * 3.0;
-        set_to_pos(params,t_x,t_y);
-    }
-    if(mlx_is_key_down(params->mlx,MLX_KEY_D))
-    {
-    t_x = params->player.x + cos(params->player.dir + M_PI / 2) * 3.0;
-    t_y = params->player.y + sin(params->player.dir + M_PI / 2) * 3.0;
-        set_to_pos(params,t_x,t_y);
-    }
-    if(mlx_is_key_down(params->mlx,MLX_KEY_A))
-    {
-        t_x = params->player.x + cos(params->player.dir - M_PI / 2) * 3.0;
-        t_y = params->player.y +  sin(params->player.dir - M_PI / 2) * 3.0;
-        set_to_pos(params,t_x,t_y);
-    }
-    if(mlx_is_key_down(params->mlx,MLX_KEY_ESCAPE))
+    player_rotation(params);
+    forward_backward(params);
+    move_sideways(params); 
+    if (mlx_is_key_down(params->mlx, MLX_KEY_ESCAPE))
         exit(0);
 }
 void key_hook(void *data)
 {
-     t_params *params = data;
+    t_params *params;
+
+    params = data;
     if(mlx_is_key_down(params->mlx,MLX_KEY_ESCAPE))
         exit(0);
     player_movement(params);
     cast_player(params);
 }
 
-void set_value(t_data data,t_params *params)
-{
-    params->data = data;   
-}
 int main(int ac, char **av) 
 {
     (void)ac;
@@ -271,11 +296,11 @@ int main(int ac, char **av)
     t_params params;
     parse_cub_file(&data, av[1]);
     params.map = data.map;
-    set_postion(&params.player,params.map, &data);
-    params.mlx = mlx_init(SCREEN_WIDTH,SCREEN_HEIGHT,"2d map",false);
+    set_position(&params.player,params.map, &data);
+    params.mlx = mlx_init(SCREEN_WIDTH, SCREEN_HEIGHT,"2d map",false);
     params.width = TILE * strlen(*params.map);
     params.height = TILE * data.map_height;
-    params.img = mlx_new_image(params.mlx,SCREEN_WIDTH,SCREEN_HEIGHT);
+    params.img = mlx_new_image(params.mlx, SCREEN_WIDTH, SCREEN_HEIGHT);
     draw_map(params.map,params.img,params.mlx);
     mlx_loop_hook(params.mlx,key_hook,&params);
     mlx_loop(params.mlx);
