@@ -51,8 +51,10 @@ typedef struct s_params{
 	mlx_t *mlx;
 	char **map;
 	mlx_image_t *img;
-    mlx_texture_t   *text;
-    mlx_texture_t   *west_text;
+    mlx_texture_t   *south_t;
+    mlx_texture_t   *west_t;
+    mlx_texture_t   *east_t;
+    mlx_texture_t   *north_t;
 	t_player player;
 	t_data data;
 	int height;
@@ -62,11 +64,8 @@ typedef struct s_params{
 
 typedef struct s_ray {
     double angle;
-    double dir_x;
-    double dir_y;
     double ver_dis;
     double hor_dis;
-    double perp_wall_dist;
     double distance;
     int map_x;
     int map_y;
@@ -74,8 +73,6 @@ typedef struct s_ray {
     int step_y;
     int facing_up;
     int facing_right;
-    int hit;
-    int side;
 } t_ray;
 
 typedef struct s_map {
