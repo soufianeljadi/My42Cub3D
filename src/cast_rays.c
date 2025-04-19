@@ -86,56 +86,106 @@ void get_verts_inter(t_params *params, t_ray *ray)
         a_x+=x_step;
     }
 }
-void draw_wall(t_params *params, t_ray ray, mlx_image_t *img, int x)
-{
-    (void)params;
-    int wall_hieght =  TILE *SCREEN_HEIGHT / ray.distance;
 
-    if(wall_hieght < 0)
-        wall_hieght = 0;
-    wall_hieght = fmin(wall_hieght,SCREEN_HEIGHT);
-    int wall_start = SCREEN_HEIGHT / 2 - wall_hieght / 2;
-    int wall_end = SCREEN_HEIGHT / 2 + wall_hieght / 2;
-    int y = 0;
-    int color;
+
+void draw_textures(t_params *params, t_ray ray, mlx_image_t *img, int x, int wall_start, int wall_end, int wall_height)
+{
+    double wall_y;
+    double wall_x;
+
+    mlx_texture_t *text = params->text;
     if(ray.hor_dis < ray.ver_dis)
     {
-        if(ray.facing_up)
-            color = 0x550070;
-        else
-            color = 0xff0000/2;
+        wall_x = params->player.x + ray.distance * (cos(ray.angle));
     }
     else
     {
-        if(ray.facing_right)
-            color = 0x00ffff;
-        else
-            color = 0x00ffff/2;
+        wall_x = params->player.y + ray.distance * (sin(ray.angle));
     }
-    color = color << 8 | 255;
+    wall_x -= floor(wall_x);
+    int text_x = wall_x * text->width;
+	int step_y = text->height / (wall_height == 0 ? 10e-22 : wall_height);
+	int pos_y = (wall_start - SCREEN_HEIGHT / 2 + wall_height / 2) * step_y;
 
-    while(y < wall_start)
+    int y = wall_start;
+    while (y < wall_end)
     {
-        mlx_put_pixel(img, x,y,0x0000ffff);
+        // Calculate texture y-coordinate with proper scaling
+        // Map the y position to the texture height
+        double pos = (y - (SCREEN_HEIGHT / 2 - wall_height / 2)) / (double)wall_height;
+        int tex_y = (int)(pos * text->height);
+        
+        // Ensure tex_y is within bounds
+        if (tex_y >= text->height)
+            tex_y = text->height - 1;
+        if (tex_y < 0)
+            tex_y = 0;
+        
+        // FIXED: Correct pixel data access from text
+        uint8_t *pixel = &text->pixels[
+            ((tex_y * text->width) + (int)text_x) * 4];
+        
+        // Create RGBA color value
+        int color = (pixel[0] << 24) | (pixel[1] << 16) | 
+                (pixel[2] << 8) | pixel[3];
+        
+        mlx_put_pixel(img, x, y, color);
         y++;
     }
-    while(y < wall_end)
-    {
-        mlx_put_pixel(img,x,y,color);
-        y++;
-    }
-    while(y < SCREEN_HEIGHT)
-    {
-            mlx_put_pixel(img,x,y,0x0000ffff);
-        y++;
-    }
+}
+
+void draw_wall(t_params *params, t_ray ray, mlx_image_t *img, int x)
+{
+    (void)params;
+    int wall_height =  TILE *SCREEN_HEIGHT / ray.distance;
+
+    if(wall_height < 0)
+        wall_height = 0;
+    wall_height = fmin(wall_height,SCREEN_HEIGHT);
+    int wall_start = SCREEN_HEIGHT / 2 - wall_height / 2;
+    int wall_end = SCREEN_HEIGHT / 2 + wall_height / 2;
+    int y = 0;
+    int color;
+
+    draw_textures(params, ray, img, x, wall_start, wall_end, wall_height);
+    // if(ray.hor_dis < ray.ver_dis)
+    // {
+    //     if(ray.facing_up)
+    //         color = 0x550070;
+    //     else
+    //         color = 0xff0000/2;
+    // }
+    // else
+    // {
+    //     if(ray.facing_right)
+    //         color = 0x00ffff;
+    //     else
+    //         color = 0x00ffff/2;
+    // }
+    // color = color << 8 | 255;
+
+    // while(y < wall_start)
+    // {
+    //     mlx_put_pixel(img, x,y,0x0000ffff);
+    //     y++;
+    // }
+    // // while(y < wall_end)
+    // // {
+    // //     mlx_put_pixel(img,x,y,color);
+    // //     y++;
+    // // }
+    // while(y < SCREEN_HEIGHT)
+    // {
+    //         mlx_put_pixel(img,x,y,0x0000ffff);
+    //     y++;
+    // }
 
 }
 void cast_rays(t_params *params, mlx_image_t *img)
 {
     int x = 0;
     t_ray ray;
- 
+
     while(x < SCREEN_WIDTH )
     {
         ray.angle = params->player.dir - (FOV / 2.0) + ((FOV / SCREEN_WIDTH ) * x);
@@ -274,6 +324,7 @@ int main(int ac, char **av)
     parse_cub_file(&data, av[1]);
     params.map = data.map;
     set_position(&params.player,params.map, &data);
+    params.text = mlx_load_png("insta.png");
     params.mlx = mlx_init(SCREEN_WIDTH, SCREEN_HEIGHT,"2d map",false);
     params.width = TILE * strlen(*params.map);
     params.height = TILE * data.map_height;
