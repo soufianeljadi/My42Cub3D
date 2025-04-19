@@ -90,47 +90,66 @@ void get_verts_inter(t_params *params, t_ray *ray)
 
 void draw_textures(t_params *params, t_ray ray, mlx_image_t *img, int x, int wall_start, int wall_end, int wall_height)
 {
-    double wall_y;
     double wall_x;
-
     mlx_texture_t *text = params->text;
+    
+
+    // Calculate where the ray hit the wall
     if(ray.hor_dis < ray.ver_dis)
     {
-        wall_x = params->player.x + ray.distance * (cos(ray.angle));
+        text = params->west_text;
+        wall_x = params->player.x + ray.hor_dis * cos(ray.angle);
+        wall_x/=TILE;
+        wall_x = wall_x - floor(wall_x);  // Get position within the tile
     }
     else
     {
-        wall_x = params->player.y + ray.distance * (sin(ray.angle));
-    }
-    wall_x -= floor(wall_x);
-    int text_x = wall_x * text->width;
-	int step_y = text->height / (wall_height == 0 ? 10e-22 : wall_height);
-	int pos_y = (wall_start - SCREEN_HEIGHT / 2 + wall_height / 2) * step_y;
+        wall_x = params->player.y + ray.ver_dis * sin(ray.angle);
+        wall_x/=TILE;
 
-    int y = wall_start;
-    while (y < wall_end)
+        if (x == 2)
+            printf("%d %f\n",text->width, wall_x);
+        wall_x = wall_x - floor(wall_x);  // Get position within the tile
+    }
+    
+    // Get x coordinate in texture
+    float text_x = ((float)text->width * wall_x);
+    // Flip texture x-coordinate if needed based on wall orientation
+    if ((ray.hor_dis < ray.ver_dis && !ray.facing_up) || 
+    (ray.hor_dis >= ray.ver_dis && !ray.facing_right))
+        text_x = text->width - text_x - 1;
+    
+    // Ensure text_x is within bounds
+    if (text_x < 0)
+        text_x = 0;
+    if (text_x >= text->width)
+        text_x = text->width - 1;
+    
+    // Draw the wall column pixel by pixel
+    for (int y = wall_start; y < wall_end; y++)
     {
-        // Calculate texture y-coordinate with proper scaling
-        // Map the y position to the texture height
-        double pos = (y - (SCREEN_HEIGHT / 2 - wall_height / 2)) / (double)wall_height;
+        // Calculate y coordinate in texture
+        // This maps the screen y position to the appropriate texture pixel
+        double pos = (double)(y - (SCREEN_HEIGHT / 2 - wall_height / 2)) / (double)(wall_height);
         int tex_y = (int)(pos * text->height);
         
         // Ensure tex_y is within bounds
-        if (tex_y >= text->height)
-            tex_y = text->height - 1;
         if (tex_y < 0)
             tex_y = 0;
+        if (tex_y >= text->height)
+            tex_y = text->height - 1; 
+            // (ray.hor_dis >= ray.ver_dis && !ray.facing_right))
+            //     text_x = text->width - text_x - 1;
         
-        // FIXED: Correct pixel data access from text
-        uint8_t *pixel = &text->pixels[
-            ((tex_y * text->width) + (int)text_x) * 4];
+        // Get the pixel from the texture
+        uint8_t *pixel = &text->pixels[((tex_y * text->width) + (int)text_x) * 4];
         
         // Create RGBA color value
         int color = (pixel[0] << 24) | (pixel[1] << 16) | 
-                (pixel[2] << 8) | pixel[3];
+                   (pixel[2] << 8) | pixel[3];
         
+        // Put the pixel on the screen
         mlx_put_pixel(img, x, y, color);
-        y++;
     }
 }
 
@@ -141,9 +160,9 @@ void draw_wall(t_params *params, t_ray ray, mlx_image_t *img, int x)
 
     if(wall_height < 0)
         wall_height = 0;
-    wall_height = fmin(wall_height,SCREEN_HEIGHT);
-    int wall_start = SCREEN_HEIGHT / 2 - wall_height / 2;
-    int wall_end = SCREEN_HEIGHT / 2 + wall_height / 2;
+    // wall_height = fmin(wall_height,SCREEN_HEIGHT);
+    int wall_start = fmax(0, SCREEN_HEIGHT / 2 - wall_height / 2);
+    int wall_end = fmin(SCREEN_HEIGHT - 1, SCREEN_HEIGHT / 2 + wall_height / 2);
     int y = 0;
     int color;
 
@@ -169,11 +188,11 @@ void draw_wall(t_params *params, t_ray ray, mlx_image_t *img, int x)
     //     mlx_put_pixel(img, x,y,0x0000ffff);
     //     y++;
     // }
-    // // while(y < wall_end)
-    // // {
-    // //     mlx_put_pixel(img,x,y,color);
-    // //     y++;
-    // // }
+    // while(y < wall_end)
+    // {
+    //     mlx_put_pixel(img,x,y,color);
+    //     y++;
+    // }
     // while(y < SCREEN_HEIGHT)
     // {
     //         mlx_put_pixel(img,x,y,0x0000ffff);
@@ -324,6 +343,7 @@ int main(int ac, char **av)
     parse_cub_file(&data, av[1]);
     params.map = data.map;
     set_position(&params.player,params.map, &data);
+    params.west_text = mlx_load_png("./textures/960.png");
     params.text = mlx_load_png("insta.png");
     params.mlx = mlx_init(SCREEN_WIDTH, SCREEN_HEIGHT,"2d map",false);
     params.width = TILE * strlen(*params.map);
