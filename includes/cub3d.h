@@ -51,6 +51,7 @@ typedef struct s_params{
 	mlx_t *mlx;
 	char **map;
 	mlx_image_t *img;
+    mlx_texture_t   *text;
 	t_player player;
 	t_data data;
 	int height;
