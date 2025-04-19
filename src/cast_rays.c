@@ -87,28 +87,30 @@ void get_verts_inter(t_params *params, t_ray *ray)
     }
 }
 
-
 void draw_textures(t_params *params, t_ray ray, mlx_image_t *img, int x, int wall_start, int wall_end, int wall_height)
 {
     double wall_x;
-    mlx_texture_t *text = params->text;
+    int color;
+    mlx_texture_t *text = params->west_t;
     
 
     // Calculate where the ray hit the wall
     if(ray.hor_dis < ray.ver_dis)
     {
-        text = params->west_text;
+        if(ray.facing_up)
+            text = params->north_t;
+        else
+            text = params->south_t;
         wall_x = params->player.x + ray.hor_dis * cos(ray.angle);
         wall_x/=TILE;
         wall_x = wall_x - floor(wall_x);  // Get position within the tile
     }
     else
     {
+        if (ray.facing_right)
+            text = params->east_t;
         wall_x = params->player.y + ray.ver_dis * sin(ray.angle);
         wall_x/=TILE;
-
-        if (x == 2)
-            printf("%d %f\n",text->width, wall_x);
         wall_x = wall_x - floor(wall_x);  // Get position within the tile
     }
     
@@ -124,7 +126,12 @@ void draw_textures(t_params *params, t_ray ray, mlx_image_t *img, int x, int wal
         text_x = 0;
     if (text_x >= text->width)
         text_x = text->width - 1;
-    
+    int k = 0;
+    while(k < wall_start){
+        color = (params->data.ceiling_color[0] << 24) | (params->data.ceiling_color[1] << 16) | 
+        (params->data.ceiling_color[2] << 8) | 255;
+        mlx_put_pixel(img, x, k++, color);
+    }
     // Draw the wall column pixel by pixel
     for (int y = wall_start; y < wall_end; y++)
     {
@@ -145,11 +152,17 @@ void draw_textures(t_params *params, t_ray ray, mlx_image_t *img, int x, int wal
         uint8_t *pixel = &text->pixels[((tex_y * text->width) + (int)text_x) * 4];
         
         // Create RGBA color value
-        int color = (pixel[0] << 24) | (pixel[1] << 16) | 
+        color = (pixel[0] << 24) | (pixel[1] << 16) | 
                    (pixel[2] << 8) | pixel[3];
         
         // Put the pixel on the screen
         mlx_put_pixel(img, x, y, color);
+    }
+    k = wall_end;
+    while(k <SCREEN_HEIGHT){
+        color = (params->data.floor_color[0]) | (params->data.floor_color[1]) | 
+                   (params->data.floor_color[2]) | 255;
+        mlx_put_pixel(img, x, k++, color);
     }
 }
 
@@ -160,45 +173,11 @@ void draw_wall(t_params *params, t_ray ray, mlx_image_t *img, int x)
 
     if(wall_height < 0)
         wall_height = 0;
-    // wall_height = fmin(wall_height,SCREEN_HEIGHT);
     int wall_start = fmax(0, SCREEN_HEIGHT / 2 - wall_height / 2);
     int wall_end = fmin(SCREEN_HEIGHT - 1, SCREEN_HEIGHT / 2 + wall_height / 2);
     int y = 0;
     int color;
-
     draw_textures(params, ray, img, x, wall_start, wall_end, wall_height);
-    // if(ray.hor_dis < ray.ver_dis)
-    // {
-    //     if(ray.facing_up)
-    //         color = 0x550070;
-    //     else
-    //         color = 0xff0000/2;
-    // }
-    // else
-    // {
-    //     if(ray.facing_right)
-    //         color = 0x00ffff;
-    //     else
-    //         color = 0x00ffff/2;
-    // }
-    // color = color << 8 | 255;
-
-    // while(y < wall_start)
-    // {
-    //     mlx_put_pixel(img, x,y,0x0000ffff);
-    //     y++;
-    // }
-    // while(y < wall_end)
-    // {
-    //     mlx_put_pixel(img,x,y,color);
-    //     y++;
-    // }
-    // while(y < SCREEN_HEIGHT)
-    // {
-    //         mlx_put_pixel(img,x,y,0x0000ffff);
-    //     y++;
-    // }
-
 }
 void cast_rays(t_params *params, mlx_image_t *img)
 {
@@ -216,8 +195,6 @@ void cast_rays(t_params *params, mlx_image_t *img)
         ray.facing_right = !(ray.angle <= 3 * M_PI/2 && ray.angle >= M_PI / 2);
         ray.hor_dis = INT_MAX;
         ray.ver_dis = INT_MAX;
-        if(ray.angle > 2 * M_PI || ray.angle<0)
-            printf("%f\n",ray.angle);
         get_hers_inter(params,&ray);
         get_verts_inter(params,&ray);
         ray.distance = fmin(ray.hor_dis,ray.ver_dis);
@@ -342,10 +319,13 @@ int main(int ac, char **av)
     t_params params;
     parse_cub_file(&data, av[1]);
     params.map = data.map;
+    params.data = data;
     set_position(&params.player,params.map, &data);
-    params.west_text = mlx_load_png("./textures/960.png");
-    params.text = mlx_load_png("insta.png");
-    params.mlx = mlx_init(SCREEN_WIDTH, SCREEN_HEIGHT,"2d map",false);
+    params.south_t = mlx_load_png(data.south_texture);
+    params.north_t = mlx_load_png(data.north_texture);
+    params.east_t = mlx_load_png(data.east_texture);
+    params.west_t = mlx_load_png(data.west_texture);
+    params.mlx = mlx_init(SCREEN_WIDTH, SCREEN_HEIGHT,"3D raycasting",false);
     params.width = TILE * strlen(*params.map);
     params.height = TILE * data.map_height;
     params.img = mlx_new_image(params.mlx, SCREEN_WIDTH, SCREEN_HEIGHT);

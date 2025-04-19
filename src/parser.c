@@ -38,7 +38,7 @@ void parse_texture(t_data *data, char *line)
         error_exit(data, "Texture path contains spaces");
     }
     char *dot = ft_strrchr(trimmed_path, '.');
-    if(ft_strcmp(dot,".xpm") != 0 || trimmed_path[ft_strlen(trimmed_path) - 5] == '/')
+    if(ft_strcmp(dot,".png") != 0 || trimmed_path[ft_strlen(trimmed_path) - 5] == '/')
     {
         free(trimmed_path);
         error_exit(data, "Invalid texture file extension");
