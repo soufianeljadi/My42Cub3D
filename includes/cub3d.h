@@ -41,13 +41,12 @@ typedef struct s_player {
     double x;
     double y;
     double dir;
-    double plane_x;
-    double plane_y;
-    double move_speed;
-    double rot_speed;
 } t_player;
 
 typedef struct s_params{
+    int wall_start;
+    int wall_end;
+    int wall_height;
 	mlx_t *mlx;
 	char **map;
 	mlx_image_t *img;
@@ -69,40 +68,27 @@ typedef struct s_ray {
     double distance;
     int map_x;
     int map_y;
-    int step_x;
-    int step_y;
     int facing_up;
     int facing_right;
 } t_ray;
 
-typedef struct s_map {
-    char **grid;
-    int width;
-    int height;
-} t_map;
+typedef struct s_wall_data
+{
+int	x;
+int	start;
+int	end;
+int	height;
+}	t_wall_data;
 
-typedef struct s_render {
-    mlx_image_t *img;
-    int screen_width;
-    int screen_height;
-    int floor_color;
-    int ceiling_color;
-    int *textures[8];
-} t_render;
-
-typedef struct s_game {
-    t_player player;
-    t_map map;
-    t_render render;
-    mlx_t *mlx;
-} t_game;
-
-
-// mlx_t *mlx;
-// char **map;
-// mlx_image_t *img;
-
-
+typedef struct s_draw_data
+{
+t_params		*params;
+t_ray			ray;
+mlx_image_t		*img;
+t_wall_data		wall;
+mlx_texture_t	*text;
+float			text_x;
+}	t_draw_data;
 
 void parse_cub_file(t_data *data, const char *filename);
 void parse_texture(t_data *data, char *line);
