@@ -26,13 +26,56 @@ int	check_commas(char *str)
 	return (0);
 }
 
+static char **validate_and_split_rgb(t_data *data, char *ptr)
+{
+    char **rgb;
+
+    while (*ptr == ' ')
+        ptr++;
+    if (check_commas(ptr))
+        error_exit(data, "Invalid RGB format");
+    rgb = ft_split(ptr, ',');
+    if (!rgb || !rgb[0] || !rgb[1] || !rgb[2] || rgb[3] || ft_all_digits(rgb) == 0)
+    {
+        ft_free_tab(rgb);
+        error_exit(data, "Invalid RGB format");
+    }
+    return (rgb);
+}
+
+static void parse_rgb_values(t_data *data, char *ptr, int *color)
+{
+    char **rgb;
+    int i;
+    int value;
+    
+    rgb = validate_and_split_rgb(data, ptr);
+    i = 0;
+    while (i < 3)
+    {
+        if (!rgb[i] || !*rgb[i] || rgb[i][0] == '\n')
+        {
+            ft_free_tab(rgb);
+            error_exit(data, "Missing RGB value");
+        }
+        value = ft_atoi(rgb[i]);
+        if (value < 0 || value > 255)
+        {
+            ft_free_tab(rgb);
+            error_exit(data, "RGB value out of range");
+        }
+        color[i] = value;
+        i++;
+    }
+    ft_free_tab(rgb);
+}
+
 void parse_color(t_data *data, char *line)
 {
 	int *color;
-	int i;
-	char **rgb= NULL;
-	char *ptr = NULL;
-
+	char *ptr;
+	
+	ptr = NULL;
 	if (ft_strncmp(line, "C ", 2) == 0)
 	{
 		if (data->has_ceiling_color)
@@ -51,36 +94,5 @@ void parse_color(t_data *data, char *line)
 	}
 	else
 		error_exit(data, "Invalid color line");
-
-	while (*ptr == ' ')
-		ptr++;
-
-	if (check_commas(ptr))
-		error_exit(data, "Invalid RGB format");
-
-	rgb = ft_split(ptr, ',');
-	if (!rgb || !rgb[0] || !rgb[1] || !rgb[2] || rgb[3] || ft_all_digits(rgb) == 0)
-	{
-		ft_free_tab(rgb);
-		error_exit(data, "Invalid RGB format");
-	}
-
-	i = 0;
-	while (i < 3)
-	{
-		if (!rgb[i] || !*rgb[i] || rgb[i][0] == '\n')
-		{
-			ft_free_tab(rgb);
-			error_exit(data, "Missing RGB value");
-		}
-		int value = ft_atoi(rgb[i]);
-		if (value < 0 || value > 255)
-		{
-			ft_free_tab(rgb);
-			error_exit(data, "RGB value out of range");
-		}
-		color[i] = value;
-		i++;
-	}
-	ft_free_tab(rgb);
+	parse_rgb_values(data, ptr, color);
 }
