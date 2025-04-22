@@ -6,7 +6,7 @@
 /*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 20:33:34 by aben-hss          #+#    #+#             */
-/*   Updated: 2025/04/22 15:02:49 by aben-hss         ###   ########.fr       */
+/*   Updated: 2025/04/22 15:14:14 by aben-hss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,12 @@ void	set_position(t_player *player, char **map, t_data *data)
 	}
 }
 
-void	init_draw_data(t_draw_data *data, t_params *params, t_ray ray,
+void	init_draw_data(t_draw_data *data, t_ray ray, \
 			mlx_image_t *img, t_wall_data wall)
 {
-	data->params = params;
 	data->ray = ray;
 	data->img = img;
 	data->wall = wall;
-	data->text = params->west_t;
 }
 
 void	calculate_texture_coordinates(t_draw_data *data)

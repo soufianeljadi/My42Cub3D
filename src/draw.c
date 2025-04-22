@@ -6,13 +6,11 @@
 /*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 14:52:03 by aben-hss          #+#    #+#             */
-/*   Updated: 2025/04/22 15:00:52 by aben-hss         ###   ########.fr       */
+/*   Updated: 2025/04/22 15:20:09 by aben-hss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
-#include "../MLX42/include/MLX42/MLX42.h"
-// #include <string.h>
 
 void	handle_flip_texture(t_draw_data *data)
 {
@@ -56,7 +54,7 @@ void	draw_wall_column(t_draw_data *data)
 		tex_y = (int)(pos * data->text->height);
 		if (tex_y < 0)
 			tex_y = 0;
-		if (tex_y >= data->text->height)
+		if ((uint8_t)tex_y >= data->text->height)
 			tex_y = data->text->height - 1;
 		pixel = &data->text->pixels[((tex_y * data->text->width)
 				+ (int)data->text_x) * 4];
@@ -94,7 +92,9 @@ void	draw_wall(t_params *params, t_ray ray, mlx_image_t *img, int x)
 	wall_end = fmin(SCREEN_HEIGHT - 1, SCREEN_HEIGHT / 2 + wall_height / 2);
 	if (wall_height < 0)
 		wall_height = 0;
-	init_draw_data(&data, params, ray, img, (t_wall_data) \
+	data.params = params;
+	data.text = params->west_t;
+	init_draw_data(&data, ray, img, (t_wall_data) \
 		{x, wall_start, wall_end, wall_height});
 	calculate_texture_coordinates(&data);
 	handle_flip_texture(&data);
