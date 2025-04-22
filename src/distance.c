@@ -6,7 +6,7 @@
 /*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 14:46:42 by aben-hss          #+#    #+#             */
-/*   Updated: 2025/04/22 15:02:57 by aben-hss         ###   ########.fr       */
+/*   Updated: 2025/04/22 19:36:58 by aben-hss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,10 @@ void	key_hook(void *data)
 	t_params	*params;
 
 	params = data;
-	if (mlx_is_key_down(params->mlx, MLX_KEY_ESCAPE))
-		exit(0);
+	if (mlx_is_key_down(params->mlx, MLX_KEY_ESCAPE)){
+		mlx_terminate(params->mlx);
+		exit (0);
+	}
 	player_movement(params);
 	cast_player(params);
 }
