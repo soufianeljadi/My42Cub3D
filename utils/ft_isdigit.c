@@ -6,7 +6,7 @@
 /*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 16:03:34 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/03/01 16:04:45 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/22 11:34:58 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	ft_isdigit(int c)
 	return (c >= '0' && c <= '9');
 }
 
-int	ft_all_digits(char **str)
+int	ft_digits(char **str)
 {
 	int	i;
 	int	j;
