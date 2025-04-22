@@ -7,7 +7,7 @@ SRCS = src/main.c src/cast_rays.c src/draw.c src/move.c src/parser.c \
 OBJS = $(SRCS:.c=.o)
 
 CC = cc
-# CFLAGS =-fsanitize=address -g3 #-Wall -Wextra -Werror 
+CFLAGS = -Wall -Wextra -Werror 
 MLX42= MLX42/libmlx42.a
 MLXFLAGS = -Iinclude -ldl -lglfw -pthread -lm
 
