@@ -6,7 +6,7 @@
 /*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 15:43:36 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/22 12:26:11 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/22 15:58:33 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	parse_cub_file(t_data *data, const char *filename);
 void	ensure_map_capacity(t_data *data);
 void	parse_map(t_data *data, char *line);
 char	*clean_texture_path(t_data *data, char *full_path);
-int		validate_texture_path(t_data *data, char *path);
+int		validate_texture_path(char *path);
 void	single_texture(t_data *data, char **ptr, int *flag, char *path);
 void	assign_texture(t_data *data, char *identifier, char *path);
 void	parse_texture(t_data *data, char *line);

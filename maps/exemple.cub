@@ -1,11 +1,10 @@
 NO ./textures/north.png
 SO ./textures/south.png
 WE ./textures/west.png
-EA ./textures/east.pnd
+EA ./textures/east.png
 
 F 9,100,1
-C 0,0,0
-
+C 0,0,01
 
         11111111111111111111111111
         1000000000110000000000001
@@ -22,4 +21,6 @@ C 0,0,0
 10000000000000001101010010001
 11111111111000000111111111111
            1W1111
-           111111
+           100001
+            101
+             1

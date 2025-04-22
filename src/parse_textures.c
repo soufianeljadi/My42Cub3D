@@ -6,7 +6,7 @@
 /*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 15:52:56 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/22 14:54:34 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/22 15:59:01 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,11 @@ char	*clean_texture_path(t_data *data, char *full_path)
 	return (result);
 }
 
-int	validate_texture_path(t_data *data, char *path)
+int	validate_texture_path(char *path)
 {
 	char	*dot;
 	int		fd;
 
-	
-	(void)data;
 	if (ft_strchr(path, ' '))
 		return (-1);
 	dot = ft_strrchr(path, '.');
@@ -57,11 +55,11 @@ void	single_texture(t_data *data, char **ptr, int *flag, char *path)
 
 void	assign_texture(t_data *data, char *identifier, char *path)
 {
-	if (!data || !identifier || !path) 
+	if (!data || !identifier || !path)
 	{
-        free(path);
-        error_exit(data, "Null pointer in assign_texture");
-    }
+		free(path);
+		error_exit(data, "Null pointer in assign_texture");
+	}
 	if (ft_strcmp(identifier, "NO") == 0)
 		single_texture(data, &data->north_texture, \
 		&data->has_north_texture, path);
@@ -97,7 +95,7 @@ void	parse_texture(t_data *data, char *line)
 	free(full_path);
 	if (!clean_path)
 		error_exit(data, "Failed to clean texture path");
-	if (validate_texture_path(data, clean_path) == -1)
+	if (validate_texture_path(clean_path) == -1)
 		return (free(clean_path), error_exit(data, "Invalid texture path"));
 	assign_texture(data, identifier, clean_path);
 }

@@ -8,7 +8,7 @@ SRCS = src/main.c src/parse_color.c  src/parse_textures.c src/parse_map.c src/pa
 OBJS = $(SRCS:.c=.o)
 
 CC = cc
-CFLAGS =#-fsanitize=address -g3  #-Wall -Wextra -Werror
+CFLAGS = -fsanitize=address -g3  -Wall -Wextra -Werror
 
 all: $(NAME)
 

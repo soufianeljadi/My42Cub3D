@@ -6,7 +6,7 @@
 /*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 15:46:39 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/22 14:51:21 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/22 15:55:48 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	free_data(t_data *data)
 {
-	int 	i;
-	
+	int		i;
+
 	if (data->north_texture)
 		free(data->north_texture);
 	if (data->south_texture)

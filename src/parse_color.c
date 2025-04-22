@@ -6,7 +6,7 @@
 /*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 11:33:01 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/22 14:52:01 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/22 15:56:07 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,8 @@ void	parse_color(t_data *data, char *line)
 	int		*color;
 	char	*ptr;
 
+	ptr = NULL;
+	color = NULL;
 	if (ft_strncmp(line, "C ", 2) == 0)
 	{
 		if (data->has_ceiling_color)

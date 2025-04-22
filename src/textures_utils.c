@@ -6,7 +6,7 @@
 /*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 11:52:38 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/22 14:57:05 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/22 16:00:39 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	*extract_texture_path(t_data *data)
 	{
 		temp = ft_strjoin(full_path, " ");
 		if (!temp)
-			return (free(full_path), error_exit(data, "Allocation failed"),NULL);
+			return (free(full_path), error_exit(data, "Alc Failed"), NULL);
 		free(full_path);
 		full_path = ft_strjoin(temp, path);
 		free(temp);
