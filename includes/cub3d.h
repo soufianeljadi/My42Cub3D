@@ -137,7 +137,7 @@ void	draw_wall_column(t_draw_data *data);
 void	draw_floor(t_draw_data *data);
 void	draw_wall(t_params *params, t_ray ray, mlx_image_t *img, int x);
 void	set_position(t_player *player, char **map, t_data *data);
-void	init_draw_data(t_draw_data *data, t_params *params, t_ray ray, \
+void	init_draw_data(t_draw_data *data, t_ray ray, \
 	mlx_image_t *img, t_wall_data wall);
 void	calculate_texture_coordinates(t_draw_data *data);
 void	cast_rays(t_params *params, mlx_image_t *img);
