@@ -6,7 +6,7 @@
 /*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 15:46:39 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/03/01 15:47:03 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/22 14:51:21 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,22 +25,15 @@ void	free_data(t_data *data)
 	if (data->east_texture)
 		free(data->east_texture);
 	if (data->map)
-	{
-		i = 0;
-		while (i < data->map_height)
-		{
-			free(data->map[i]);
-			i++;
-		}
-		free(data->map);
-	}
+		ft_free_tab(data->map);
 }
 
 void	error_exit(t_data *data, const char *msg)
 {
+	if (data)
+		free_data(data);
 	write(2, "Error: ", 7);
 	write(2, msg, ft_strlen(msg));
 	write(2, "\n", 1);
-	free_data(data);
 	exit(1);
 }

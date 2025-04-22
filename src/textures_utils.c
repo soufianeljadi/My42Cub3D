@@ -6,7 +6,7 @@
 /*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 11:52:38 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/22 11:57:36 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/22 14:57:05 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,19 @@ char	*extract_texture_path(t_data *data, char *line)
 	if (!path)
 		error_exit(data, "Invalid texture line: missing path");
 	full_path = ft_strdup(path);
+	if (!full_path)
+		error_exit(data, "Memory allocation failed");
 	path = ft_strtok(NULL, " ");
 	while (path != NULL)
 	{
 		temp = ft_strjoin(full_path, " ");
+		if (!temp)
+			return (free(full_path), error_exit(data, "Allocation failed"), 1);
 		free(full_path);
 		full_path = ft_strjoin(temp, path);
 		free(temp);
+		if (!full_path)
+			error_exit(data, "Memory allocation failed");
 		path = ft_strtok(NULL, " ");
 	}
 	return (full_path);

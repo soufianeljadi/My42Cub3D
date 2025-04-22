@@ -6,7 +6,7 @@
 /*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 15:43:36 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/22 12:10:17 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/22 12:26:11 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ typedef struct s_data {
 	int		has_ceiling_color;
 }	t_data;
 
-
 //paerse_cub
 int		check_commas(char *str);
 void	check_colors(t_data *data);
@@ -53,7 +52,7 @@ void	open_cub_file(t_data *data, const char *filename, int fd);
 void	parse_cub_file(t_data *data, const char *filename);
 void	ensure_map_capacity(t_data *data);
 void	parse_map(t_data *data, char *line);
-char	*clean_texture_path(t_data *data, char *full_path)
+char	*clean_texture_path(t_data *data, char *full_path);
 void	validate_texture_path(t_data *data, char *path);
 void	single_texture(t_data *data, char **ptr, int *flag, char *path);
 void	assign_texture(t_data *data, char *identifier, char *path);

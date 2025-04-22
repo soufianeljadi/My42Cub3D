@@ -6,7 +6,7 @@
 /*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 11:33:01 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/22 11:36:29 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/22 14:52:01 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	check_commas(char *str)
 	return (0);
 }
 
-static char	**validate_and_split_rgb(t_data *data, char *ptr)
+char	**validate_and_split_rgb(t_data *data, char *ptr)
 {
 	char	**rgb;
 
@@ -47,7 +47,12 @@ static char	**validate_and_split_rgb(t_data *data, char *ptr)
 	if (check_commas(ptr))
 		error_exit(data, "Invalid RGB format");
 	rgb = ft_split(ptr, ',');
-	if (!rgb || !rgb[0] || !rgb[1] || !rgb[2] || rgb[3] || ft_digits(rgb) == 0)
+	if (!rgb || !rgb[0] || !rgb[1] || !rgb[2] || rgb[3])
+	{
+		ft_free_tab(rgb);
+		error_exit(data, "Invalid RGB format");
+	}
+	if (ft_digits(rgb) == 0)
 	{
 		ft_free_tab(rgb);
 		error_exit(data, "Invalid RGB format");
@@ -87,7 +92,6 @@ void	parse_color(t_data *data, char *line)
 	int		*color;
 	char	*ptr;
 
-	ptr = NULL;
 	if (ft_strncmp(line, "C ", 2) == 0)
 	{
 		if (data->has_ceiling_color)

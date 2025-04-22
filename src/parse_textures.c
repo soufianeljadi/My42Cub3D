@@ -6,7 +6,7 @@
 /*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 15:52:56 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/22 11:58:29 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/22 14:54:34 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,21 @@ char	*clean_texture_path(t_data *data, char *full_path)
 	return (result);
 }
 
-void	validate_texture_path(t_data *data, char *path)
+int	validate_texture_path(t_data *data, char *path)
 {
 	char	*dot;
+	int		fd;
 
 	if (ft_strchr(path, ' '))
-		error_exit(data, "Texture path contains spaces");
+		return (-1);
 	dot = ft_strrchr(path, '.');
 	if (!dot || ft_strcmp(dot, ".png") != 0 || path[ft_strlen(path) - 5] == '/')
-		error_exit(data, "Invalid texture file extension");
-	if (open(path, O_RDONLY) == -1)
-		error_exit(data, "Failed to open texture file");
+		return (-1);
+	fd = open(path, O_RDONLY);
+	if (fd == -1)
+		return (-1);
+	close(fd);
+	return (0);
 }
 
 void	single_texture(t_data *data, char **ptr, int *flag, char *path)
@@ -81,7 +85,16 @@ void	parse_texture(t_data *data, char *line)
 	if (!identifier)
 		error_exit(data, "Invalid texture line: missing identifier");
 	full_path = extract_texture_path(data, line);
+	if (!full_path)
+		error_exit(data, "Failed to extract texture path");
 	clean_path = clean_texture_path(data, full_path);
-	validate_texture_path(data, clean_path);
+	if (!clean_path)
+	{
+		free(full_path);
+		error_exit(data, "Failed to clean texture path");
+	}
+	free(full_path);
+	if (validate_texture_path(data, clean_path) == -1)
+		return (free(clean_path), error_exit(data, "Invalid texture path"), 1);
 	assign_texture(data, identifier, clean_path);
 }
