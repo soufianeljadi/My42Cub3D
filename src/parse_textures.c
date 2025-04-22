@@ -20,7 +20,6 @@ char	*clean_texture_path(t_data *data, char *full_path)
 	trimmed_path = ft_strtrim(full_path, " ");
 	if (!trimmed_path)
 		error_exit(data, "Failed to trim texture path");
-	free(full_path);
 	result = ft_strtrim(trimmed_path, "\n");
 	if (!result)
 		error_exit(data, "Failed to trim texture path");
@@ -33,6 +32,8 @@ int	validate_texture_path(t_data *data, char *path)
 	char	*dot;
 	int		fd;
 
+	
+	(void)data;
 	if (ft_strchr(path, ' '))
 		return (-1);
 	dot = ft_strrchr(path, '.');
@@ -56,6 +57,11 @@ void	single_texture(t_data *data, char **ptr, int *flag, char *path)
 
 void	assign_texture(t_data *data, char *identifier, char *path)
 {
+	if (!data || !identifier || !path) 
+	{
+        free(path);
+        error_exit(data, "Null pointer in assign_texture");
+    }
 	if (ft_strcmp(identifier, "NO") == 0)
 		single_texture(data, &data->north_texture, \
 		&data->has_north_texture, path);
@@ -84,17 +90,14 @@ void	parse_texture(t_data *data, char *line)
 	identifier = ft_strtok(line, " ");
 	if (!identifier)
 		error_exit(data, "Invalid texture line: missing identifier");
-	full_path = extract_texture_path(data, line);
+	full_path = extract_texture_path(data);
 	if (!full_path)
 		error_exit(data, "Failed to extract texture path");
 	clean_path = clean_texture_path(data, full_path);
-	if (!clean_path)
-	{
-		free(full_path);
-		error_exit(data, "Failed to clean texture path");
-	}
 	free(full_path);
+	if (!clean_path)
+		error_exit(data, "Failed to clean texture path");
 	if (validate_texture_path(data, clean_path) == -1)
-		return (free(clean_path), error_exit(data, "Invalid texture path"), 1);
+		return (free(clean_path), error_exit(data, "Invalid texture path"));
 	assign_texture(data, identifier, clean_path);
 }

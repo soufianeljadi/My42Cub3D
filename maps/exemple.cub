@@ -1,7 +1,7 @@
 NO ./textures/north.png
 SO ./textures/south.png
 WE ./textures/west.png
-EA ./textures/east.png
+EA ./textures/east.pnd
 
 F 9,100,1
 C 0,0,0

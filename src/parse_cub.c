@@ -47,7 +47,7 @@ void	process_cub_line(t_data *data, char *line, int *map_started)
 		error_exit(data, "Newline in an invalid place");
 }
 
-void	open_cub_file(t_data *data, const char *filename, int fd)
+void	open_cub_file(t_data *data, int fd)
 {
 	char	*line;
 	int		map_started;
@@ -78,7 +78,7 @@ void	parse_cub_file(t_data *data, const char *filename)
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 		error_exit(data, "Failed to open file");
-	open_cub_file(data, filename, fd);
+	open_cub_file(data, fd);
 	close(fd);
 	check_textures(data);
 	check_colors(data);

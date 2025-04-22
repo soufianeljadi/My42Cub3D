@@ -24,7 +24,7 @@ void	check_textures(t_data *data)
 		error_exit(data, "Missing east texture");
 }
 
-char	*extract_texture_path(t_data *data, char *line)
+char	*extract_texture_path(t_data *data)
 {
 	char	*path;
 	char	*full_path;
@@ -42,7 +42,7 @@ char	*extract_texture_path(t_data *data, char *line)
 	{
 		temp = ft_strjoin(full_path, " ");
 		if (!temp)
-			return (free(full_path), error_exit(data, "Allocation failed"), 1);
+			return (free(full_path), error_exit(data, "Allocation failed"),NULL);
 		free(full_path);
 		full_path = ft_strjoin(temp, path);
 		free(temp);
