@@ -1,7 +1,7 @@
-NO ./textures/north_texture.xpm
-SO ./textures/south_texture.xpm
-WE ./textures/west_texture.xpm
-EA ./textures/east_texture.xpm
+NO extures/north.png
+SO textures/south.png
+WE textures/west.png
+EA textures/east.png
 
 
 C    1,1,2
