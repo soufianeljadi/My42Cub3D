@@ -6,7 +6,7 @@
 /*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 14:52:03 by aben-hss          #+#    #+#             */
-/*   Updated: 2025/04/22 15:20:09 by aben-hss         ###   ########.fr       */
+/*   Updated: 2025/04/24 18:35:11 by aben-hss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ void	handle_flip_texture(t_draw_data *data)
 {
 	if ((data->ray.hor_dis < data->ray.ver_dis && !data->ray.facing_up)
 		|| (data->ray.hor_dis >= data->ray.ver_dis && !data->ray.facing_right))
-		data->text_x = data->text->width - data->text_x - 1;
+		data->text_x = data->text->width - data->text_x;
 	if (data->text_x < 0)
 		data->text_x = 0;
 	if (data->text_x >= data->text->width)
-		data->text_x = data->text->width - 1;
+		data->text_x = data->text->width;
 }
 
 void	draw_ceiling(t_draw_data *data)
