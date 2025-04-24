@@ -6,7 +6,7 @@
 /*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 20:33:34 by aben-hss          #+#    #+#             */
-/*   Updated: 2025/04/22 15:14:14 by aben-hss         ###   ########.fr       */
+/*   Updated: 2025/04/24 16:53:49 by aben-hss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	set_position(t_player *player, char **map, t_data *data)
 		{
 			if (ft_strchr("NSEW", map[y][x++]))
 			{
-				player->x = (x * TILE) + TILE / 2;
+				player->x = (x * TILE) - (TILE / 2);
 				player->y = (y * TILE) + TILE / 2;
 				player->dir = 0;
 				if (map[y][x] == 'N')
