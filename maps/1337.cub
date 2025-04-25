@@ -1,12 +1,10 @@
-NO                     ./textures/north_texture.xpm
-F    220,100,0000    
-SO            ./textures/south_texture.xpm
+NO ./textures/north.png
+SO ./textures/south.png
+WE ./textures/west.png
+EA ./textures/east.png
 
-
-C 255,255,25
-
-WE                 ./textures/west_texture.xpm
-EA           ./textures/east_texture.xpm
+F 90,1,1
+C 234,6,9
 
                                              1                                    1
                                             101                                  101

@@ -9,7 +9,7 @@ SRCS =  src/parse_color.c  src/parse_textures.c src/parse_map.c src/parse_cub.c 
 OBJS = $(SRCS:.c=.o)
 
 CC = cc
-CFLAGS =  -fsanitize=address -g3
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g3
 MLX42= MLX42/libmlx42.a
 MLXFLAGS = -Iinclude -ldl -lglfw -pthread -lm
 

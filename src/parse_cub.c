@@ -6,7 +6,7 @@
 /*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 15:47:38 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/22 12:01:02 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/25 12:25:24 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ int	has_cub_extension(const char *filename)
 
 void	process_cub_line(t_data *data, char *line, int *map_started)
 {
-
 	if (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0
 		|| ft_strncmp(line, "WE ", 3) == 0 || ft_strncmp(line, "EA ", 3) == 0)
 	{
@@ -58,7 +57,7 @@ void	open_cub_file(t_data *data, int fd)
 	while (line != NULL)
 	{
 		process_cub_line(data, line, &map_started);
-		if (map_started && !ft_strchr("01 ",line[0]))
+		if (map_started && !ft_strchr("01 ", line[0]))
 			error_exit(data, "map should be at the bottom ");
 		free(line);
 		line = get_next_line(fd);
