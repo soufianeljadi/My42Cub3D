@@ -16,8 +16,8 @@ int	ft_atoi(char *str)
 {
 	int			i;
 	int			s;
-	long int	r;
-	long int	x;
+	int			r;
+	int			x;
 
 	i = 0;
 	s = 1;
@@ -34,7 +34,7 @@ int	ft_atoi(char *str)
 		if (r > x && s == 1)
 			return (-1);
 		else if (r > x && s == -1)
-			return (0);
+			return (-1);
 		r = x;
 	}
 	return (r * s);

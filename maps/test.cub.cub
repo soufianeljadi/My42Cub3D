@@ -1,13 +1,15 @@
-NO ./textures/north_texture.xpm
-SO ./textures/south_texture.xpm
-WE ./textures/west_texture.xpm
-EA ./textures/east_texture.xpm
 
+NO ./textures/north.png
+SO ./textures/north.png
+WE ./textures/north.png
+EA ./textures/north.png
 
-C 255,255,255
+C 255,255,0
 F 0,0,0
+
+
 111111111111111111111
-10000000000000000000001
+1000000000000000000001
 100000S000000000000001
 1000000000000000000001
 1111111111111111111111
