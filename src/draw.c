@@ -6,7 +6,7 @@
 /*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 14:52:03 by aben-hss          #+#    #+#             */
-/*   Updated: 2025/04/24 18:35:11 by aben-hss         ###   ########.fr       */
+/*   Updated: 2025/04/25 14:01:43 by aben-hss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,6 @@ void	draw_wall(t_params *params, t_ray ray, mlx_image_t *img, int x)
 	wall_height = TILE * SCREEN_HEIGHT / ray.distance;
 	wall_start = fmax(0, SCREEN_HEIGHT / 2 - wall_height / 2);
 	wall_end = fmin(SCREEN_HEIGHT - 1, SCREEN_HEIGHT / 2 + wall_height / 2);
-	if (wall_height < 0)
-		wall_height = 0;
 	data.params = params;
 	data.text = params->west_t;
 	init_draw_data(&data, ray, img, (t_wall_data) \
