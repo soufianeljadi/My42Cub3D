@@ -6,7 +6,7 @@
 /*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 16:45:29 by aben-hss          #+#    #+#             */
-/*   Updated: 2025/04/26 16:45:31 by aben-hss         ###   ########.fr       */
+/*   Updated: 2025/04/26 18:44:37 by aben-hss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ int		has_cub_extension(const char *filename);
 void	process_cub_line(t_data *data, char *line, int *map_started);
 void	open_cub_file(t_data *data, int fd);
 void	parse_cub_file(t_data *data, const char *filename);
-void	ensure_map_capacity(t_data *data);
+void	ensure_map_capacity(t_data *data, char *trimmed_line);
 void	parse_map(t_data *data, char *line);
 char	*clean_texture_path(t_data *data, char *full_path);
 int		validate_texture_path(char *path);

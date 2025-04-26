@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_textures.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 15:52:56 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/22 15:59:01 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/26 18:42:44 by aben-hss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,10 @@ char	*clean_texture_path(t_data *data, char *full_path)
 		error_exit(data, "Failed to trim texture path");
 	result = ft_strtrim(trimmed_path, "\n");
 	if (!result)
+	{
+		free(trimmed_path);
 		error_exit(data, "Failed to trim texture path");
+	}
 	free(trimmed_path);
 	return (result);
 }
