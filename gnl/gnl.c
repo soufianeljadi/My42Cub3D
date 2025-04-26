@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   gnl.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/26 16:45:14 by aben-hss          #+#    #+#             */
+/*   Updated: 2025/04/26 16:46:01 by aben-hss         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
@@ -97,5 +108,5 @@ char	*get_next_line(int fd)
 	}
 	line = ft_line(start_str);
 	start_str = ft_move_start(start_str);
-	return (line); 
+	return (line);
 }

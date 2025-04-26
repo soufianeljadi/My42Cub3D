@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/01 16:03:27 by sel-jadi          #+#    #+#             */
+/*   Updated: 2025/03/01 16:03:30 by sel-jadi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/cub3d.h"
 
 int	ft_atoi(char *str)
 {
 	int			i;
 	int			s;
-	long int	r;
-	long int	x;
+	int			r;
+	int			x;
 
 	i = 0;
 	s = 1;
@@ -22,7 +34,7 @@ int	ft_atoi(char *str)
 		if (r > x && s == 1)
 			return (-1);
 		else if (r > x && s == -1)
-			return (0);
+			return (-1);
 		r = x;
 	}
 	return (r * s);

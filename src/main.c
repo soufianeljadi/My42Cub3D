@@ -6,15 +6,17 @@
 /*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 14:54:20 by aben-hss          #+#    #+#             */
-/*   Updated: 2025/04/22 19:46:45 by aben-hss         ###   ########.fr       */
+/*   Updated: 2025/04/26 16:49:30 by aben-hss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-void on_window_close(void* param)
+void	on_window_close(void *param)
 {
-	mlx_t* mlx = (mlx_t*)param;
+	mlx_t	*mlx;
+
+	mlx = (mlx_t *)param;
 	mlx_terminate(mlx);
 	exit(EXIT_SUCCESS);
 }

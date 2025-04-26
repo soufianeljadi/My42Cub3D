@@ -6,7 +6,7 @@
 /*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 14:46:42 by aben-hss          #+#    #+#             */
-/*   Updated: 2025/04/24 16:49:03 by aben-hss         ###   ########.fr       */
+/*   Updated: 2025/04/26 16:47:39 by aben-hss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,6 @@ void	set_to_pos(t_params *params, double x, double y)
 	}
 	params->player.x = x;
 	params->player.y = y;
-	// if((int)x <0 || (int)x > params->data.map_width * TILE || (int)y < 0 || (int)y > params->data.map_height * TILE )
-	// 	return;
-	// if(params->map[(int)y][(int)x] != '1')
-	// {
-	// 	params->player.x = x;
-	// 	params->player.y = y;	
-	// }
 }
 
 void	get_hors_inter(t_params *par, t_ray *ray)
@@ -110,7 +103,8 @@ void	key_hook(void *data)
 	t_params	*params;
 
 	params = data;
-	if (mlx_is_key_down(params->mlx, MLX_KEY_ESCAPE)){
+	if (mlx_is_key_down(params->mlx, MLX_KEY_ESCAPE))
+	{
 		mlx_terminate(params->mlx);
 		exit (0);
 	}
