@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_cub.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 15:47:38 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/25 12:25:24 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/26 20:19:25 by aben-hss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ void	process_cub_line(t_data *data, char *line, int *map_started)
 		parse_map(data, line);
 	}
 	else if (line[0] != '\n')
-		error_exit(data, "Invalid line in .cub file");
+		(free(line)), error_exit(data, "Invalid line in .cub file");
 	else if (*map_started && line[0] == '\n')
-		error_exit(data, "Newline in an invalid place");
+		(free(line)), error_exit(data, "Newline in an invalid place");
 }
 
 void	open_cub_file(t_data *data, int fd)
@@ -58,7 +58,7 @@ void	open_cub_file(t_data *data, int fd)
 	{
 		process_cub_line(data, line, &map_started);
 		if (map_started && !ft_strchr("01 ", line[0]))
-			error_exit(data, "map should be at the bottom ");
+			(free(line)), error_exit(data, "map should be at the bottom ");
 		free(line);
 		line = get_next_line(fd);
 	}
