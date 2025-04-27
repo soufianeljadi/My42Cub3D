@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_textures.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 15:52:56 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/26 20:40:50 by aben-hss         ###   ########.fr       */
+/*   Updated: 2025/04/27 15:05:04 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,15 +94,16 @@ void	parse_texture(t_data *data, char *line, int fd)
 
 	identifier = ft_strtok(line, " ");
 	if (!identifier)
-		close(fd), error_exit(data, "Invalid texture line: missing identifier");
+		(close(fd)), error_exit(data, "Invalid texture missing identifier");
 	full_path = extract_texture_path(data);
 	if (!full_path)
-		close(fd), (free(identifier)), error_exit(data, "Failed to extract texture path");
+		(close(fd)), (free(identifier)),
+		error_exit(data, "Failed to extract texture path");
 	clean_path = clean_texture_path(data, full_path);
 	free(full_path);
 	if (!clean_path)
-		close(fd), (free(identifier)),
-			error_exit(data, "Failed to clean texture path");
+		(close(fd)), (free(identifier)),
+		error_exit(data, "Failed to clean texture path");
 	if (validate_texture_path(clean_path) == -1)
 		return (free(clean_path), free(identifier), close(fd),
 			error_exit(data, "Invalid texture path"));

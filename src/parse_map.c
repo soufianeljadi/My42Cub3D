@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 15:57:45 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/26 18:44:10 by aben-hss         ###   ########.fr       */
+/*   Updated: 2025/04/27 15:03:43 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	ensure_map_capacity(t_data *data, char *trimmed_line, int fd)
 		new_map = malloc(sizeof(char *) * data->map_capacity);
 		if (!new_map)
 		{
-			close(fd), free(trimmed_line);
+			(close(fd)), free(trimmed_line),
 			error_exit(data, "Failed to resize map array");
 		}
 		i = 0;
@@ -45,13 +45,13 @@ void	parse_map(t_data *data, char *line, int fd)
 	{
 		data->map = malloc(sizeof(char *) * 10);
 		if (!data->map)
-			close(fd),error_exit(data, "Failed to allocate memory for map");
+			(close(fd)), error_exit(data, "Failed to allocate memory for map");
 		data->map_height = 0;
 		data->map_capacity = 10;
 	}
 	trimmed_line = ft_strtrim(line, "\n");
 	if (!trimmed_line)
-		close(fd),error_exit(data, "Failed to trim map line");
+		(close(fd)), error_exit(data, "Failed to trim map line");
 	ensure_map_capacity(data, trimmed_line, fd);
 	data->map[data->map_height++] = trimmed_line;
 }

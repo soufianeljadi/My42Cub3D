@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_cub.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 15:47:38 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/26 20:19:25 by aben-hss         ###   ########.fr       */
+/*   Updated: 2025/04/27 15:03:13 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ void	process_cub_line(t_data *data, char *line, int *map_started, int fd)
 		parse_map(data, line, fd);
 	}
 	else if (line[0] != '\n')
-		(close(fd)),(free(line)), error_exit(data, "Invalid line in .cub file");
+		(close(fd)), (free(line)), error_exit(data, "Invalid line in .cub");
 	else if (*map_started && line[0] == '\n')
-		(close(fd)),(free(line)), error_exit(data, "Newline in an invalid place");
+		(close(fd)), (free(line)), error_exit(data, "Newline in invalid place");
 }
 
 void	open_cub_file(t_data *data, int fd)
@@ -58,13 +58,14 @@ void	open_cub_file(t_data *data, int fd)
 	{
 		process_cub_line(data, line, &map_started, fd);
 		if (map_started && !ft_strchr("01 ", line[0]))
-			close(fd),(free(line)), error_exit(data, "map should be at the bottom ");
+			(close(fd)), (free(line)),
+			error_exit(data, "map should be at the bottom ");
 		free(line);
 		line = get_next_line(fd);
 	}
 	free(line);
 	if (!map_started)
-		close(fd), error_exit(data, "Map not found in .cub file");
+		(close(fd)), error_exit(data, "Map not found in .cub file");
 }
 
 void	parse_cub_file(t_data *data, const char *filename)

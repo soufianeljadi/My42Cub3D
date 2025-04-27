@@ -6,7 +6,7 @@
 /*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 11:33:01 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/22 15:56:07 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/27 15:01:34 by sel-jadi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,40 +45,40 @@ char	**validate_and_split_rgb(t_data *data, char *ptr, int fd)
 	while (*ptr == ' ')
 		ptr++;
 	if (check_commas(ptr))
-		close(fd),error_exit(data, "Invalid RGB format");
+		(close(fd)), error_exit(data, "Invalid RGB format");
 	rgb = ft_split(ptr, ',');
 	if (!rgb || !rgb[0] || !rgb[1] || !rgb[2] || rgb[3])
 	{
-		close(fd),ft_free_tab(rgb);
+		(close(fd)), ft_free_tab(rgb),
 		error_exit(data, "Invalid RGB format");
 	}
 	if (ft_digits(rgb) == 0)
 	{
-		close(fd),ft_free_tab(rgb);
+		(close(fd)), ft_free_tab(rgb),
 		error_exit(data, "Invalid RGB format");
 	}
 	return (rgb);
 }
 
-static void	parse_rgb_values(t_data *data, char *ptr, int *color,int fd)
+static void	parse_rgb_values(t_data *data, char *ptr, int *color, int fd)
 {
 	char	**rgb;
 	int		i;
 	int		value;
 
-	rgb = validate_and_split_rgb(data, ptr ,fd);
+	rgb = validate_and_split_rgb(data, ptr, fd);
 	i = 0;
 	while (i < 3)
 	{
 		if (!rgb[i] || !*rgb[i] || rgb[i][0] == '\n')
 		{
-			close(fd),ft_free_tab(rgb);
+			(close(fd)), ft_free_tab(rgb),
 			error_exit(data, "Missing RGB value");
 		}
 		value = ft_atoi(rgb[i]);
 		if (value < 0 || value > 255)
 		{
-			close(fd),ft_free_tab(rgb);
+			(close(fd)), ft_free_tab(rgb),
 			error_exit(data, "RGB value out of range");
 		}
 		color[i] = value;
@@ -97,7 +97,7 @@ void	parse_color(t_data *data, char *line, int fd)
 	if (ft_strncmp(line, "C ", 2) == 0)
 	{
 		if (data->has_ceiling_color)
-		close(fd),error_exit(data, "Duplicate ceiling color");
+			(close(fd)), error_exit(data, "Duplicate ceiling color");
 		color = data->ceiling_color;
 		data->has_ceiling_color = 1;
 		ptr = line + 2;
@@ -105,12 +105,12 @@ void	parse_color(t_data *data, char *line, int fd)
 	else if (ft_strncmp(line, "F ", 2) == 0)
 	{
 		if (data->has_floor_color)
-		close(fd),error_exit(data, "Duplicate floor color");
+			(close(fd)), error_exit(data, "Duplicate floor color");
 		color = data->floor_color;
 		data->has_floor_color = 1;
 		ptr = line + 2;
 	}
 	else
-		close(fd), error_exit(data, "Invalid color line");
-	parse_rgb_values(data, ptr, color,fd);
+		(close(fd)), error_exit(data, "Invalid color line");
+	parse_rgb_values(data, ptr, color, fd);
 }
