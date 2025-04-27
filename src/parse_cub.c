@@ -24,27 +24,27 @@ int	has_cub_extension(const char *filename)
 	return (ft_strcmp(dot, ".cub") == 0);
 }
 
-void	process_cub_line(t_data *data, char *line, int *map_started)
+void	process_cub_line(t_data *data, char *line, int *map_started, int fd)
 {
 	if (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0
 		|| ft_strncmp(line, "WE ", 3) == 0 || ft_strncmp(line, "EA ", 3) == 0)
 	{
-		parse_texture(data, line);
+		parse_texture(data, line, fd);
 	}
 	else if (ft_strncmp(line, "F ", 2) == 0 || ft_strncmp(line, "C ", 2) == 0)
 	{
-		parse_color(data, line);
+		parse_color(data, line, fd);
 	}
 	else if (ft_strchr("01NSEW ", line[0]))
 	{
 		if (!*map_started)
 			*map_started = 1;
-		parse_map(data, line);
+		parse_map(data, line, fd);
 	}
 	else if (line[0] != '\n')
-		(free(line)), error_exit(data, "Invalid line in .cub file");
+		(close(fd)),(free(line)), error_exit(data, "Invalid line in .cub file");
 	else if (*map_started && line[0] == '\n')
-		(free(line)), error_exit(data, "Newline in an invalid place");
+		(close(fd)),(free(line)), error_exit(data, "Newline in an invalid place");
 }
 
 void	open_cub_file(t_data *data, int fd)
@@ -56,14 +56,15 @@ void	open_cub_file(t_data *data, int fd)
 	line = get_next_line(fd);
 	while (line != NULL)
 	{
-		process_cub_line(data, line, &map_started);
+		process_cub_line(data, line, &map_started, fd);
 		if (map_started && !ft_strchr("01 ", line[0]))
-			(free(line)), error_exit(data, "map should be at the bottom ");
+			close(fd),(free(line)), error_exit(data, "map should be at the bottom ");
 		free(line);
 		line = get_next_line(fd);
 	}
+	free(line);
 	if (!map_started)
-		error_exit(data, "Map not found in .cub file");
+		close(fd), error_exit(data, "Map not found in .cub file");
 }
 
 void	parse_cub_file(t_data *data, const char *filename)

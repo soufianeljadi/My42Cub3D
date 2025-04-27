@@ -86,7 +86,7 @@ void	assign_texture(t_data *data, char *identifier, char *path)
 	}
 }
 
-void	parse_texture(t_data *data, char *line)
+void	parse_texture(t_data *data, char *line, int fd)
 {
 	char	*identifier;
 	char	*full_path;
@@ -94,17 +94,17 @@ void	parse_texture(t_data *data, char *line)
 
 	identifier = ft_strtok(line, " ");
 	if (!identifier)
-		error_exit(data, "Invalid texture line: missing identifier");
+		close(fd), error_exit(data, "Invalid texture line: missing identifier");
 	full_path = extract_texture_path(data);
 	if (!full_path)
-		(free(identifier)), error_exit(data, "Failed to extract texture path");
+		close(fd), (free(identifier)), error_exit(data, "Failed to extract texture path");
 	clean_path = clean_texture_path(data, full_path);
 	free(full_path);
 	if (!clean_path)
-		(free(identifier)),
+		close(fd), (free(identifier)),
 			error_exit(data, "Failed to clean texture path");
 	if (validate_texture_path(clean_path) == -1)
-		return (free(clean_path), free(identifier),
+		return (free(clean_path), free(identifier), close(fd),
 			error_exit(data, "Invalid texture path"));
 	assign_texture(data, identifier, clean_path);
 }
