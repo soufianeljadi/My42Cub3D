@@ -29,25 +29,25 @@ A graphics project using the MLX42 library - a performant, cross-platform window
 - GLFW 3.3+
 - C compiler (GCC/Clang/MSVC)
 
-### Building MLX42
+## Building MLX42
 ```bash
 cd .MLX42
 cmake -B build
 cmake --build build -j4
 ```
 
-### Usage
+## Usage
 Basic Compilation
-macOS:
+### macOS:
 gcc main.c -Iinclude -Lbuild -lmlx42 -lglfw -framework Cocoa -framework OpenGL -framework IOKit
 
-Linux:
+### Linux:
 gcc main.c -Iinclude -Lbuild -lmlx42 -lglfw -ldl -pthread -lm
 
-Windows (WSL2):
+### Windows (WSL2):
 gcc main.c -Iinclude -Lbuild -lmlx42 -lglfw -lX11
 
-### Project Structure
+## Project Structure
 - **.MLX/**
   - `includes/` - MLX42 header files
   - `libmlx42.a` - Compiled library binary
@@ -71,7 +71,7 @@ gcc main.c -Iinclude -Lbuild -lmlx42 -lglfw -lX11
   - `helpers.h`
 - **Makefile** - Build configuration
 
-### Dependencies
+## Dependencies
 
 GLFW: Window and input handling
 OpenGL: Graphics rendering
@@ -79,15 +79,14 @@ CMake: Build system
 
 Install dependencies on:
 
-macOS:
+### macOS:
 brew install glfw cmake
 
-Ubuntu/Debian:
+### Ubuntu/Debian:
 sudo apt install libglfw3-dev libx11-dev cmake
 
-Arch Linux:
+### Arch Linux:
 sudo pacman -S glfw-x11 cmake
 
-### License
+## License
 MLX42 is licensed under the BSD 3-Clause License.
-
