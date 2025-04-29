@@ -48,29 +48,28 @@ Windows (WSL2):
 gcc main.c -Iinclude -Lbuild -lmlx42 -lglfw -lX11
 
 ### Project Structure
-.
-├── .MLX/ # MLX42 library files
-│ ├── includes/ # MLX42 header files
-│ └── libmlx42.a # Compiled library binary
-├── src/ # Main source files
-│ ├── main.c # Entry point
-│ └── [other .c files]
-├── includes/ # Project header files
-│ ├── cub3d.h # Main header
-│ └── [other .h files]
-├── maps/ # Game map files
-│ ├── 1337.cub
-│ └── [other map files]
-├── textures/ # Image assets
-│ ├── north.png
-│ └── [other textures]
-├── gnl/ # Get Next Line implementation
-│ ├── gnl.c
-│ └── gnl.h
-├── utils/ # Utility functions
-│ ├── helpers.c
-│ └── helpers.h
-└── Makefile # Build configuration
+- **.MLX/**
+  - `includes/` - MLX42 header files
+  - `libmlx42.a` - Compiled library binary
+- **src/**
+  - `main.c` - Entry point
+  - `[other .c files]`
+- **includes/**
+  - `cub3d.h` - Main header
+  - `[other .h files]`
+- **maps/**
+  - `1337.cub`
+  - `[other map files]`
+- **textures/**
+  - `north.png`
+  - `[other textures]`
+- **gnl/**
+  - `gnl.c`
+  - `gnl.h`
+- **utils/**
+  - `helpers.c`
+  - `helpers.h`
+- **Makefile** - Build configuration
 
 ### Dependencies
 
