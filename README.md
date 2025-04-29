@@ -1,6 +1,8 @@
 # Cub3d Graphics Project
 
-![MLX42 Logo](https://github.com/codam-coding-college/MLX42/raw/main/assets/mlx42.png)
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/63303990/150698103-7e908ff3-abf8-4b0f-ad54-07a76b6c45e2.png" alt="42MLX_Logo">
+</div>
 
 A graphics project using the MLX42 library - a performant, cross-platform windowing and graphics library built on OpenGL.
 
