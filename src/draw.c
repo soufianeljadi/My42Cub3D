@@ -6,7 +6,7 @@
 /*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 14:52:03 by aben-hss          #+#    #+#             */
-/*   Updated: 2025/04/22 15:20:09 by aben-hss         ###   ########.fr       */
+/*   Updated: 2025/04/26 10:08:28 by aben-hss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ void	handle_flip_texture(t_draw_data *data)
 {
 	if ((data->ray.hor_dis < data->ray.ver_dis && !data->ray.facing_up)
 		|| (data->ray.hor_dis >= data->ray.ver_dis && !data->ray.facing_right))
-		data->text_x = data->text->width - data->text_x - 1;
+		data->text_x = data->text->width - data->text_x;
 	if (data->text_x < 0)
 		data->text_x = 0;
 	if (data->text_x >= data->text->width)
-		data->text_x = data->text->width - 1;
+		data->text_x = data->text->width;
 }
 
 void	draw_ceiling(t_draw_data *data)
@@ -57,7 +57,7 @@ void	draw_wall_column(t_draw_data *data)
 		if ((uint8_t)tex_y >= data->text->height)
 			tex_y = data->text->height - 1;
 		pixel = &data->text->pixels[((tex_y * data->text->width)
-				+ (int)data->text_x) * 4];
+				+ (int)data->text_x) * data->text->bytes_per_pixel];
 		color = (pixel[0] << 24) | (pixel[1] << 16)
 			| (pixel[2] << 8) | pixel[3];
 		mlx_put_pixel(data->img, data->wall.x, y, color);
@@ -90,8 +90,6 @@ void	draw_wall(t_params *params, t_ray ray, mlx_image_t *img, int x)
 	wall_height = TILE * SCREEN_HEIGHT / ray.distance;
 	wall_start = fmax(0, SCREEN_HEIGHT / 2 - wall_height / 2);
 	wall_end = fmin(SCREEN_HEIGHT - 1, SCREEN_HEIGHT / 2 + wall_height / 2);
-	if (wall_height < 0)
-		wall_height = 0;
 	data.params = params;
 	data.text = params->west_t;
 	init_draw_data(&data, ray, img, (t_wall_data) \

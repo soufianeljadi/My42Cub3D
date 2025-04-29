@@ -9,17 +9,16 @@ SRCS =  src/parse_color.c  src/parse_textures.c src/parse_map.c src/parse_cub.c 
 OBJS = $(SRCS:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g3
-MLX42= MLX42/libmlx42.a
+CFLAGS =  -Wall -Wextra -Werror 
+MLX42= .MLX42/libmlx42.a
 MLXFLAGS = -Iinclude -ldl -lglfw -pthread -lm
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(MLX42) $(MLXFLAGS) -o $(NAME)
-
-%.o : %.c /includes/cub3d.h
-	$(CC) $(CFLAGS) -c $< -o $@
+%.o:%.c includes/cub3d.h
+	${CC} ${CFLAGS} -c -o $@ $<
 
 clean:
 	rm -f $(OBJS)

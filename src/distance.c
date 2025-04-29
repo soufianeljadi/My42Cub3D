@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   distance.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 14:46:42 by aben-hss          #+#    #+#             */
-/*   Updated: 2025/04/25 12:27:11 by sel-jadi         ###   ########.fr       */
+/*   Updated: 2025/04/26 18:24:29 by aben-hss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,11 @@ void	key_hook(void *data)
 	params = data;
 	if (mlx_is_key_down(params->mlx, MLX_KEY_ESCAPE))
 	{
+		mlx_delete_texture(params->south_t);
+		mlx_delete_texture(params->north_t);
+		mlx_delete_texture(params->west_t);
+		mlx_delete_texture(params->east_t);
+		free_data(&params->data);
 		mlx_terminate(params->mlx);
 		exit (0);
 	}

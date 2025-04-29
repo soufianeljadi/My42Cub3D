@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sel-jadi <sel-jadi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aben-hss <aben-hss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/25 12:29:30 by sel-jadi          #+#    #+#             */
-/*   Updated: 2025/04/25 12:38:15 by sel-jadi         ###   ########.fr       */
+/*   Created: 2025/04/26 16:45:29 by aben-hss          #+#    #+#             */
+/*   Updated: 2025/04/27 15:15:58 by aben-hss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@
 # include <math.h>
 # include <unistd.h>
 # include <limits.h>
-# include "../MLX42/include/MLX42/MLX42.h"
+# include "../.MLX42/include/MLX42/MLX42.h"
 # define MAX_LINE_LENGTH 1024
 
 # define SCREEN_WIDTH 1800
 # define SCREEN_HEIGHT 1200
 # define TILE  64
-# define FOV (M_PI / 3)
+# define FOV 1.04
 
 typedef struct s_data {
 	char	*north_texture;
@@ -113,18 +113,18 @@ typedef struct s_intersection {
 //paerse_cub
 int		check_commas(char *str);
 void	check_colors(t_data *data);
-void	parse_color(t_data *data, char *line);
+void	parse_color(t_data *data, char *line, int fd);
 int		has_cub_extension(const char *filename);
-void	process_cub_line(t_data *data, char *line, int *map_started);
+void	process_cub_line(t_data *data, char *line, int *map_started, int fd);
 void	open_cub_file(t_data *data, int fd);
 void	parse_cub_file(t_data *data, const char *filename);
-void	ensure_map_capacity(t_data *data);
-void	parse_map(t_data *data, char *line);
+void	ensure_map_capacity(t_data *data, char *trimmed_line, int fd);
+void	parse_map(t_data *data, char *line, int fd);
 char	*clean_texture_path(t_data *data, char *full_path);
 int		validate_texture_path(char *path);
 void	single_texture(t_data *data, char **ptr, int *flag, char *path);
 void	assign_texture(t_data *data, char *identifier, char *path);
-void	parse_texture(t_data *data, char *line);
+void	parse_texture(t_data *data, char *line, int fd);
 void	check_textures(t_data *data);
 char	*extract_texture_path(t_data *data);
 void	validate_map(t_data *data);
