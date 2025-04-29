@@ -49,15 +49,28 @@ gcc main.c -Iinclude -Lbuild -lmlx42 -lglfw -lX11
 
 ### Project Structure
 .
-├── .MLX/                # MLX42 library files
-│   └── libmlx42.a      # Compiled library
-├── src/                # Project source files
-├── includes
-├── maps
-├── textures
-├── gnl
-├── utils
-└── Makefile           # Build configuration
+├── .MLX/ # MLX42 library files
+│ ├── includes/ # MLX42 header files
+│ └── libmlx42.a # Compiled library binary
+├── src/ # Main source files
+│ ├── main.c # Entry point
+│ └── [other .c files]
+├── includes/ # Project header files
+│ ├── cub3d.h # Main header
+│ └── [other .h files]
+├── maps/ # Game map files
+│ ├── 1337.cub
+│ └── [other map files]
+├── textures/ # Image assets
+│ ├── north.png
+│ └── [other textures]
+├── gnl/ # Get Next Line implementation
+│ ├── gnl.c
+│ └── gnl.h
+├── utils/ # Utility functions
+│ ├── helpers.c
+│ └── helpers.h
+└── Makefile # Build configuration
 
 ### Dependencies
 
