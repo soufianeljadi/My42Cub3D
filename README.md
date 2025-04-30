@@ -88,5 +88,13 @@ sudo apt install libglfw3-dev libx11-dev cmake
 ### Arch Linux:
 sudo pacman -S glfw-x11 cmake
 
+
+## Gameplay
+
+![Screenshot 2025-04-30 123719](https://github.com/user-attachments/assets/08a17f05-cbf3-4017-816b-23bd36cf6e57)
+
+![Screenshot 2025-04-30 124214](https://github.com/user-attachments/assets/f7b55d2e-ed6e-431e-822b-8183903e6bad)
+
+
 ## License
 MLX42 is licensed under the BSD 3-Clause License.
